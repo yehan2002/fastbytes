@@ -1,0 +1,8 @@
+github.com/enescakir/emoji v1.0.0 h1:W+HsNql8swfCQFtioDGDHCHri8nudlK1n5p2rHCJoog=
+github.com/enescakir/emoji v1.0.0/go.mod h1:Bt1EKuLnKDTYpLALApstIkAjdDrS/8IAgTkKp+WKFD0=
+github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31 h1:OXcKh35JaYsGMRzpvFkLv/MEyPuL49CThT1pZ8aSml4=
+github.com/ttacon/chalk v0.0.0-20160626202418-22c06c80ed31/go.mod h1:onvgF043R+lC5RZ8IT9rBXDaEDnpnw/Cl+HFiw+v/7Q=
+github.com/yehan2002/errors v1.1.1 h1:BRNCHHhFvva+1lQNFWr+BdBaJ2PzvucJsz3eZnXtiKQ=
+github.com/yehan2002/errors v1.1.1/go.mod h1:vd/cZvWo6tzv1v1UdN1akENX8CeaZd4nkqzKHt8LwEo=
+github.com/yehan2002/is v1.2.0 h1:vMIQ54yDdCXiY+aoKgnKMt/r3lFtq/rxFDEX15aSF7c=
+github.com/yehan2002/is v1.2.0/go.mod h1:0AHuRd53mvL5Ngrxbd7TqM3USFoAmAUPyKGe8YT4gk8=
