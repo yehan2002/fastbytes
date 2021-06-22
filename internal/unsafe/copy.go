@@ -68,22 +68,17 @@ const rotate16SmallSize = 12
 //rotate16 rotate the bytes in the given slice.
 //This function is used since individually rotating uint16 is slow.
 func rotate16(dst []uint16) {
-	if len(dst) < rotate16SmallSize {
-		// the following is faster for small slices
-		for j := 0; j < len(dst); j++ {
-			dst[j] = bits.ReverseBytes16(dst[j])
-		}
-	} else {
-
+	var l int
+	if len(dst) >= rotate16SmallSize {
 		d := u16Tou64(dst)
 		for j := 0; j < len(d); j++ {
 			var u = d[j]
 			d[j] = (u&rot16Msb)>>8 | (u&rot16Lsb)<<8
 		}
+		l = len(d) * 4
+	}
 
-		//handle any uint16s we missed
-		for l := len(d) * 4; l < len(dst); l++ {
-			dst[l] = bits.ReverseBytes16(dst[l])
-		}
+	for ; l < len(dst); l++ {
+		dst[l] = bits.ReverseBytes16(dst[l])
 	}
 }
