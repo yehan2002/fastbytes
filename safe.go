@@ -10,4 +10,4 @@ import (
 )
 
 var rotateBigEndian = true
-var provider = safe.BytesSafe
+var provider = safe.Bytes
