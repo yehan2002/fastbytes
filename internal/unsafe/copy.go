@@ -2,6 +2,8 @@ package unsafe
 
 import (
 	"math/bits"
+
+	"github.com/yehan2002/bytes/internal"
 )
 
 const (
@@ -18,7 +20,7 @@ func copy16(src, dst []uint16, rotate bool) int {
 	if rotate {
 		rotate16(dst)
 	}
-	return n * uint16Bytes
+	return n * internal.Uint16Bytes
 }
 
 // copy16 copy uint32 from src to dst.
@@ -30,7 +32,7 @@ func copy32(src, dst []uint32, rotate bool) int {
 			dst[j] = bits.ReverseBytes32(dst[j])
 		}
 	}
-	return n * uint32Bytes
+	return n * internal.Uint32Bytes
 }
 
 // copy16 copy uint64 from src to dst.
@@ -42,7 +44,7 @@ func copy64(src, dst []uint64, rotate bool) int {
 			dst[j] = bits.ReverseBytes64(dst[j])
 		}
 	}
-	return n * uint64Bytes
+	return n * internal.Uint64Bytes
 }
 
 // copySlice copy bytes from src to dst.
@@ -52,14 +54,14 @@ func copy64(src, dst []uint64, rotate bool) int {
 // This function assumes that the given slices are at least one byte long.
 func copySlice(src, dst []byte, size int, rotate bool) int {
 	switch size {
-	case uint8Bytes:
+	case internal.Uint8Bytes:
 		return copy(dst, src)
-	case uint16Bytes:
-		return FromU16(u8Tou16(src), dst, rotate)
-	case uint32Bytes:
-		return FromU32(u8Tou32(src), dst, rotate)
-	case uint64Bytes:
-		return FromU64(u8Tou64(src), dst, rotate)
+	case internal.Uint16Bytes:
+		return copy16(u8Tou16(src), u8Tou16(dst), rotate)
+	case internal.Uint32Bytes:
+		return copy32(u8Tou32(src), u8Tou32(dst), rotate)
+	case internal.Uint64Bytes:
+		return copy64(u8Tou64(src), u8Tou64(dst), rotate)
 	}
 	panic("invalid byte size provided")
 }

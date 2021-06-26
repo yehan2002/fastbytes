@@ -9,16 +9,7 @@ import (
 )
 
 const (
-	// uint8Bytes the number of bytes in an uint8.
-	uint8Bytes = 1 << iota
-	// uint16Bytes the number of bytes in an uint16.
-	uint16Bytes
-	// uint32Bytes the number of bytes in an uint32.
-	uint32Bytes
-	// uint64Bytes the number of bytes in an uint64.
-	uint64Bytes
-	// uint8Bytes the number of uint16 in a uint64.
-	uint64Uint16s = uint64Bytes / uint16Bytes
+	uint64Uint16s = internal.Uint64Bytes / internal.Uint16Bytes
 	// uint8Bits the number of bits in a uint8.
 	uint8Bits = 8
 )

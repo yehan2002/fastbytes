@@ -8,8 +8,6 @@ import (
 	"github.com/yehan2002/is"
 )
 
-var rotateBigEndian = IsLittleEndian
-
 func TestUnsafe(t *testing.T) { is.Suite(t, &testUnsafe{}) }
 
 type testUnsafe struct{}

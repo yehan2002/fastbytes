@@ -2,20 +2,30 @@ package internal
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 )
 
-//Exported from bytes
-var (
-	ErrShort         error = errors.New("short")
-	ErrUnsupported   error = errors.New("unsupported")
-	ErrUnaddressable error = errors.New("unaddressable")
+const (
+	Uint8Bytes = 1 << iota
+	// uint16Bytes the number of bytes in an uint16.
+	Uint16Bytes
+	// uint32Bytes the number of bytes in an uint32.
+	Uint32Bytes
+	// uint64Bytes the number of bytes in an uint64.
+	Uint64Bytes
 )
 
-//IsSafeSlice returns if the given type is a slice or array, with a element type that can be safely converted to bytes.
-//All signed and unsigned intergers except uint and int, and floats are considered to be safe types.
-//uint and int are considered to be unsafe since their size is platform dependent.
+// Error to be used by sub packages.
+// These will be overridden by bytes
+var (
+	ErrShort         = errors.New("short")
+	ErrUnsupported   = errors.New("unsupported")
+	ErrUnaddressable = errors.New("unaddressable")
+)
+
+// IsSafeSlice returns if the given type is a slice or array, with a element type that can be safely converted to bytes.
+// All signed and unsigned intergers except uint and int, and floats are considered to be safe types.
+// uint and int are considered to be unsafe since their size is platform dependent.
 func IsSafeSlice(t reflect.Type) bool {
 	if k := t.Kind(); k != reflect.Array && k != reflect.Slice {
 		if k != reflect.Ptr || t.Elem().Kind() != reflect.Array {
@@ -24,40 +34,44 @@ func IsSafeSlice(t reflect.Type) bool {
 		t = t.Elem()
 	}
 
-	k := t.Elem().Kind()
-	return k == reflect.Int8 || k == reflect.Uint8 ||
-		k == reflect.Int16 || k == reflect.Uint16 ||
-		k == reflect.Int32 || k == reflect.Uint32 || k == reflect.Float32 ||
-		k == reflect.Int64 || k == reflect.Uint64 || k == reflect.Float64
+	switch t.Elem().Kind() {
+	case reflect.Int8, reflect.Uint8,
+		reflect.Int16, reflect.Uint16,
+		reflect.Int32, reflect.Uint32, reflect.Float32,
+		reflect.Int64, reflect.Uint64, reflect.Float64:
+		return true
+	default:
+		return false
+	}
 }
 
-//CanFitCopyFrom a
+// CanFitCopyFrom returns if dst is large enough to fit src if src has a element size of `size`
 func CanFitCopyFrom(src, dst, size int) bool {
 	return dst >= size && src*size <= dst
 }
 
-//CanFitCopyTo b
+// CanFitCopyTo returns if dst is large enough to fit src if dst has a element size of `size`
 func CanFitCopyTo(src, dst, size int) bool { return src >= size && src <= dst*size }
 
-//ShouldCopyFrom 1
-func ShouldCopyFrom(src, dst, size int) (bool, error) {
-	fmt.Println(src, dst, size)
+// CanCopyFrom returns if src can be copied to dst
+// This returns true if src can fit in dst and len(src)>0
+func CanCopyFrom(src, dst, size int) (bool, error) {
 	if src == 0 {
 		return false, nil
 	}
-	if dst >= size && src*size <= dst {
+	if CanFitCopyFrom(src, dst, size) {
 		return true, nil
 	}
 	return false, ErrShort
 }
 
-//ShouldCopyTo 2
-func ShouldCopyTo(src, dst, size int) (bool, error) {
-	fmt.Println(src, dst, size)
+// CanCopyTo returns if src can be copied to dst
+// This returns true if src can fit in dst and len(src)>0
+func CanCopyTo(src, dst, size int) (bool, error) {
 	if src == 0 {
 		return false, nil
 	}
-	if src >= size && src <= dst*size {
+	if CanFitCopyTo(src, dst, size) {
 		return true, nil
 	}
 	return false, ErrShort

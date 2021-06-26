@@ -7,10 +7,12 @@ import (
 	"github.com/yehan2002/bytes/internal/safe"
 )
 
+var safeBytes = safe.Bytes{}
+
 // FromSlice copies bytes from the given interface.
 // The provided interface must be a type that can be safely copied.
 // The given slice must be large enough to fit all the bytes in `s`
-func FromSlice(s interface{}, dst []byte, rotate bool) (n int, err error) {
+func (Bytes) FromSlice(s interface{}, dst []byte, rotate bool) (n int, err error) {
 	var src []byte
 	var size int
 	if src, size, err = ifaceBytes(s, true); err == nil && len(src) != 0 {
@@ -25,7 +27,7 @@ func FromSlice(s interface{}, dst []byte, rotate bool) (n int, err error) {
 // FromValue copies bytes from the given value.
 // The provided value must be a type that can be safely converted to bytes.
 // The given slice must be large enough to fit all bytes in `s`
-func FromValue(s reflect.Value, dst []byte, rotate bool) (n int, err error) {
+func (Bytes) FromValue(s reflect.Value, dst []byte, rotate bool) (n int, err error) {
 	var src []byte
 	var size int
 	if src, size, err = valueBytes(s); err == nil && len(src) != 0 {
@@ -35,7 +37,7 @@ func FromValue(s reflect.Value, dst []byte, rotate bool) (n int, err error) {
 		return 0, internal.ErrShort
 	}
 	if err == errAddress {
-		return safe.FromValue(s, dst, rotate && IsLittleEndian) //nolint: wrapcheck
+		return safeBytes.FromValue(s, dst, rotate && IsLittleEndian) //nolint: wrapcheck
 	}
 	return
 }
@@ -43,7 +45,7 @@ func FromValue(s reflect.Value, dst []byte, rotate bool) (n int, err error) {
 // ToSlice copies bytes from `s` into the given slice.
 // The given interface must be a type  that can be safely written to.
 // `d` must be large enough to fit all the bytes in `s`.
-func ToSlice(src []byte, d interface{}, rotate bool) (n int, err error) {
+func (Bytes) ToSlice(src []byte, d interface{}, rotate bool) (n int, err error) {
 	var dst []byte
 	var size int
 	if dst, size, err = ifaceBytes(d, false); err == nil && len(dst) != 0 {
@@ -58,7 +60,7 @@ func ToSlice(src []byte, d interface{}, rotate bool) (n int, err error) {
 // ToValue copies bytes from `src` into the given value
 // The given interface must be a type that can be safely written to.
 // `d` must be large enough to fit all the bytes in `src`
-func ToValue(src []byte, d reflect.Value, rotate bool) (n int, err error) {
+func (Bytes) ToValue(src []byte, d reflect.Value, rotate bool) (n int, err error) {
 	var dst []byte
 	var size int
 	if dst, size, err = valueBytes(d); err == nil && len(dst) != 0 {

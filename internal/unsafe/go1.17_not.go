@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"runtime"
 	"unsafe"
+
+	"github.com/yehan2002/bytes/internal"
 )
 
 // sliceOf creates a new byte slice from the given pointer.
@@ -26,7 +28,7 @@ func u8Tou16(d []byte) (v []uint16) {
 	_ = d[:2]
 	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
 	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/uint16Bytes, len(d)/uint16Bytes
+	slice.Len, slice.Cap = len(d)/internal.Uint16Bytes, len(d)/internal.Uint16Bytes
 	runtime.KeepAlive(d)
 	return
 }
@@ -38,7 +40,7 @@ func u8Tou32(d []byte) (v []uint32) {
 	_ = d[:4]
 	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
 	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/uint32Bytes, len(d)/uint32Bytes
+	slice.Len, slice.Cap = len(d)/internal.Uint32Bytes, len(d)/internal.Uint32Bytes
 	runtime.KeepAlive(d)
 	return
 }
@@ -50,7 +52,7 @@ func u8Tou64(d []byte) (v []uint64) {
 	_ = d[:8]
 	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
 	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/uint64Bytes, len(d)/uint64Bytes
+	slice.Len, slice.Cap = len(d)/internal.Uint64Bytes, len(d)/internal.Uint64Bytes
 	runtime.KeepAlive(d)
 	return
 }
