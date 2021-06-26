@@ -3,12 +3,13 @@ package data
 import (
 	"encoding/binary"
 	"math"
+	"reflect"
 )
 
-const size = 64
+const size = len(Bytes)
 
-//Bytes uint8
-var Bytes = [size]uint8{
+// Bytes bytes used for tests
+var Bytes = [...]uint8{
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
 	0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
 	0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10,
@@ -19,7 +20,7 @@ var Bytes = [size]uint8{
 	0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10,
 }
 
-//testdata
+// testdata
 var (
 	Int8 [size]int8
 
@@ -46,10 +47,10 @@ var (
 	Float64LittleEndian [size >> 3]float64
 )
 
-//AllBigEndian all bigEndian value
+// AllBigEndian all bigEndian value
 var AllBigEndian []interface{}
 
-//AllLittleEndian all bigEndian value
+// AllLittleEndian all bigEndian value
 var AllLittleEndian []interface{}
 
 func init() {
@@ -69,8 +70,11 @@ func init() {
 		Int16LittleEndian[j] = int16(value)
 	}
 
+	appendData(Uint16LittleEndian, Uint16BigEndian)
+	appendData(Int16LittleEndian, Int16BigEndian)
+
 	for i := 0; i < len(Bytes); i += 4 {
-		j := i >> 2
+		j := i >> 2 //nolint
 
 		value := binary.LittleEndian.Uint32(Bytes[i:])
 		Uint32LittleEndian[j] = value
@@ -84,7 +88,7 @@ func init() {
 	}
 
 	for i := 0; i < len(Bytes); i += 8 {
-		j := i >> 3
+		j := i >> 3 //nolint
 
 		value := binary.LittleEndian.Uint64(Bytes[i:])
 		Uint64LittleEndian[j] = value
@@ -108,4 +112,79 @@ func init() {
 		&Bytes, &Int8, &Uint16LittleEndian, &Int16LittleEndian, &Uint32LittleEndian, &Int32LittleEndian, &Float32LittleEndian, &Uint64LittleEndian, &Int64LittleEndian, &Float64LittleEndian,
 		Bytes[:], Int8[:], Uint16LittleEndian[:], Int16LittleEndian[:], Uint32LittleEndian[:], Int32LittleEndian[:], Float32LittleEndian[:], Uint64LittleEndian[:], Int64LittleEndian[:], Float64LittleEndian[:],
 	}
+}
+
+// Data test data
+type Data struct {
+	len  int
+	name string
+	typ  reflect.Type
+
+	v     [2]interface{}
+	vPtr  [2]interface{}
+	slice [2]interface{}
+
+	vValue     [2]reflect.Value
+	vPtrValue  [2]reflect.Value
+	sliceValue [2]reflect.Value
+}
+
+func bToI(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+func (d *Data) Array(bigEndian bool) interface{}    { return d.v[bToI(bigEndian)] }
+func (d *Data) ArrayPtr(bigEndian bool) interface{} { return d.vPtr[bToI(bigEndian)] }
+func (d *Data) ValueArrayUnaddressable(bigEndian bool) reflect.Value {
+	return reflect.ValueOf(d.v[bToI(bigEndian)])
+}
+func (d *Data) Slice(bigEndian bool) interface{} { return d.slice[bToI(bigEndian)] }
+
+func (d *Data) ValueArray(bigEndian bool) reflect.Value    { return d.vValue[bToI(bigEndian)] }
+func (d *Data) ValueArrayPtr(bigEndian bool) reflect.Value { return d.vPtrValue[bToI(bigEndian)] }
+func (d *Data) ValueSlice(bigEndian bool) reflect.Value    { return d.sliceValue[bToI(bigEndian)] }
+
+func (d *Data) NewArrayValue() reflect.Value    { return reflect.New(d.typ).Elem() }
+func (d *Data) NewArrayPtrValue() reflect.Value { return reflect.New(d.typ) }
+func (d *Data) NewSliceValue() reflect.Value    { return reflect.New(d.typ).Elem().Slice(0, d.len) }
+
+func (d *Data) NewArray() interface{}    { return d.NewArrayValue().Interface() }
+func (d *Data) NewArrayPtr() interface{} { return d.NewArrayPtrValue().Interface() }
+func (d *Data) NewSlice() interface{}    { return d.NewSliceValue().Interface() }
+
+func (d *Data) Bytes() int   { return d.len * int(d.typ.Elem().Size()) }
+func (d *Data) Name() string { return d.name }
+
+// TestData test data
+var TestData []*Data
+
+func appendData(little, big interface{}) {
+	typ := reflect.TypeOf(little)
+	length := typ.Len()
+
+	littleVPtr, bigVPtr := reflect.New(typ), reflect.New(typ)
+	littleV, bigV := littleVPtr.Elem(), bigVPtr.Elem()
+
+	reflect.Copy(littleV, reflect.ValueOf(little))
+	reflect.Copy(bigV, reflect.ValueOf(big))
+
+	littleSliceV, bigSliceV := littleV.Slice(0, length), bigV.Slice(0, length)
+
+	d := &Data{
+		len:  length,
+		name: typ.Elem().Kind().String(),
+		typ:  typ,
+
+		v:          [2]interface{}{little, big},
+		vValue:     [2]reflect.Value{littleV, bigV},
+		vPtr:       [2]interface{}{littleVPtr.Interface(), bigVPtr.Interface()},
+		vPtrValue:  [2]reflect.Value{littleVPtr, bigVPtr},
+		slice:      [2]interface{}{littleSliceV.Interface(), bigSliceV.Interface()},
+		sliceValue: [2]reflect.Value{littleSliceV, bigSliceV},
+	}
+
+	TestData = append(TestData, d)
 }

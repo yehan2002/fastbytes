@@ -1,0 +1,46 @@
+linters:
+    enable:
+      - deadcode 
+      - errcheck 
+      - gosimple
+      - govet 
+      - ineffassign 
+      - staticcheck 
+      - structcheck 
+      - typecheck
+      - unused
+      - varcheck
+      - cyclop
+      - gocritic
+      - exhaustive
+      - durationcheck
+      - forbidigo
+      - exportloopref
+      - funlen
+      - gomnd
+      - gosec
+      - prealloc
+      - unconvert
+
+linters-settings:
+  staticcheck:
+    # Select the Go version to target. The default is '1.13'.
+    go: "1.16.5"
+    # https://staticcheck.io/docs/options#checks
+    checks: [ "all" ]
+
+  cyclop:
+    # the maximal code complexity to report
+    max-complexity: 10
+    # the maximal average package complexity. If it's higher than 0.0 (float) the check is enabled (default 0.0)
+    package-average: 0.0
+    # should ignore tests (default false)
+    skip-tests: false
+  
+  exhaustive:
+    # check switch statements in generated files also
+    check-generated: false
+    # indicates that switch statements are to be considered exhaustive if a
+    # 'default' case is present, even if all enum members aren't listed in the
+    # switch
+    default-signifies-exhaustive: true

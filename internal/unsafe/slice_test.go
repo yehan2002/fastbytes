@@ -1,314 +1,312 @@
 package unsafe
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
 	"github.com/yehan2002/bytes/internal"
 	"github.com/yehan2002/bytes/internal/data"
-	"github.com/yehan2002/is"
 )
 
-func TestSlice(t *testing.T) {
-	is.Suite(t, &testSlice{rotateBigEndian: IsLittleEndian})
-}
-
-type testSlice struct{ rotateBigEndian bool }
-
-func (t *testSlice) TestFrom8(is is.IS) {
+func TestFrom8(t *testing.T) {
+	t.Parallel()
 	var dst [len(data.Bytes)]byte
 	n := FromI8(data.Int8[:], dst[:])
-	is.True(n == len(data.Int8), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
+	checkCopyFrom(t, "From8", dst, n)
 }
 
-func (t *testSlice) TestTo8(is is.IS) {
-	var dst [len(data.Int8)]int8
+func TestFrom16(t *testing.T) {
+	t.Parallel()
+	t.Run("FromI16BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromI16(data.Int16BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From16", dst, n)
+	})
+	t.Run("FromI16LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromI16(data.Int16LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From16", dst, n)
+	})
+	t.Run("FromU16BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromU16(data.Uint16BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From16", dst, n)
+	})
+	t.Run("FromU16LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromU16(data.Uint16LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From16", dst, n)
+	})
+}
+
+func TestFrom32(t *testing.T) {
+	t.Parallel()
+	t.Run("FromI32BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromI32(data.Int32BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From32", dst, n)
+	})
+	t.Run("FromI32LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromI32(data.Int32LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From32", dst, n)
+	})
+	t.Run("FromU32BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromU32(data.Uint32BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From32", dst, n)
+	})
+	t.Run("FromU32LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromU32(data.Uint32LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From32", dst, n)
+	})
+	t.Run("FromF32BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromF32(data.Float32BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From32", dst, n)
+	})
+	t.Run("FromF32LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromF32(data.Float32LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From32", dst, n)
+	})
+}
+
+func TestFrom64(t *testing.T) {
+	t.Parallel()
+	t.Run("FromI64BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromI64(data.Int64BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From64", dst, n)
+	})
+	t.Run("FromI64LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromI64(data.Int64LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From64", dst, n)
+	})
+	t.Run("FromU64BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromU64(data.Uint64BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From64", dst, n)
+	})
+	t.Run("FromU64LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromU64(data.Uint64LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From64", dst, n)
+	})
+	t.Run("FromF64BigEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromF64(data.Float64BigEndian[:], dst[:], rotateBigEndian)
+		checkCopyFrom(t, "From64", dst, n)
+	})
+	t.Run("FromF64LittleEndian", func(t *testing.T) {
+		var dst [len(data.Bytes)]byte
+		n := FromF64(data.Float64LittleEndian[:], dst[:], !rotateBigEndian)
+		checkCopyFrom(t, "From64", dst, n)
+	})
+}
+
+func TestTo8(t *testing.T) {
+	t.Parallel()
+	var dst [len(data.Bytes)]int8
 	n := ToI8(data.Bytes[:], dst[:])
-	is.True(n == len(data.Int8), "Not all bytes copied")
-	is.True(dst == data.Int8, "Incorrect copy")
+	checkCopy(t, "ToI8", dst, n, data.Int8, len(data.Bytes))
 }
 
-func (t *testSlice) TestFrom16(is is.IS) {
-	var dst [len(data.Bytes)]byte
-	n := FromI16(data.Int16BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromI16(data.Int16LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromU16(data.Uint16BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromU16(data.Uint16LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
+func TestTo16(t *testing.T) {
+	t.Parallel()
+	t.Run("ToI16BigEndian", func(t *testing.T) {
+		var dst [len(data.Int16BigEndian)]int16
+		n := ToI16(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI16", dst, n, data.Int16BigEndian, len(data.Bytes))
+	})
+	t.Run("ToI16LittleEndian", func(t *testing.T) {
+		var dst [len(data.Int16BigEndian)]int16
+		n := ToI16(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI16", dst, n, data.Int16LittleEndian, len(data.Bytes))
+	})
+	t.Run("ToU16BigEndian", func(t *testing.T) {
+		var dst [len(data.Int16BigEndian)]uint16
+		n := ToU16(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI16", dst, n, data.Uint16BigEndian, len(data.Bytes))
+	})
+	t.Run("ToU16LittleEndian", func(t *testing.T) {
+		var dst [len(data.Int16BigEndian)]uint16
+		n := ToU16(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI16", dst, n, data.Uint16LittleEndian, len(data.Bytes))
+	})
 }
 
-func (t *testSlice) TestTo16(is is.IS) {
-	var dst [len(data.Int16BigEndian)]int16
-	var dst2 [len(data.Int16BigEndian)]uint16
-
-	n := ToI16(data.Bytes[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Int16BigEndian, "Incorrect copy")
-
-	n = ToI16(data.Bytes[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Int16LittleEndian, "Incorrect copy")
-
-	n = ToU16(data.Bytes[:], dst2[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst2 == data.Uint16BigEndian, "Incorrect copy")
-
-	n = ToU16(data.Bytes[:], dst2[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst2 == data.Uint16LittleEndian, "Incorrect copy")
+func TestTo32(t *testing.T) {
+	t.Parallel()
+	t.Run("ToI32BigEndian", func(t *testing.T) {
+		var dst [len(data.Int32BigEndian)]int32
+		n := ToI32(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI32", dst, n, data.Int32BigEndian, len(data.Bytes))
+	})
+	t.Run("ToI32LittleEndian", func(t *testing.T) {
+		var dst [len(data.Int32BigEndian)]int32
+		n := ToI32(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI32", dst, n, data.Int32LittleEndian, len(data.Bytes))
+	})
+	t.Run("ToU32BigEndian", func(t *testing.T) {
+		var dst [len(data.Uint32BigEndian)]uint32
+		n := ToU32(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI32", dst, n, data.Uint32BigEndian, len(data.Bytes))
+	})
+	t.Run("ToU32LittleEndian", func(t *testing.T) {
+		var dst [len(data.Uint32BigEndian)]uint32
+		n := ToU32(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI32", dst, n, data.Uint32LittleEndian, len(data.Bytes))
+	})
+	t.Run("ToF32BigEndian", func(t *testing.T) {
+		var dst [len(data.Float32BigEndian)]float32
+		n := ToF32(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI32", dst, n, data.Float32BigEndian, len(data.Bytes))
+	})
+	t.Run("ToF32LittleEndian", func(t *testing.T) {
+		var dst [len(data.Float32BigEndian)]float32
+		n := ToF32(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI32", dst, n, data.Float32LittleEndian, len(data.Bytes))
+	})
 }
 
-func (t *testSlice) TestFrom32(is is.IS) {
-	var dst [len(data.Bytes)]byte
-	n := FromI32(data.Int32BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromI32(data.Int32LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromU32(data.Uint32BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromU32(data.Uint32LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromF32(data.Float32BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromF32(data.Float32LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
+func TestTo64(t *testing.T) {
+	t.Parallel()
+	t.Run("ToI64BigEndian", func(t *testing.T) {
+		var dst [len(data.Int64BigEndian)]int64
+		n := ToI64(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI64", dst, n, data.Int64BigEndian, len(data.Bytes))
+	})
+	t.Run("ToI64LittleEndian", func(t *testing.T) {
+		var dst [len(data.Int64BigEndian)]int64
+		n := ToI64(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI64", dst, n, data.Int64LittleEndian, len(data.Bytes))
+	})
+	t.Run("ToU64BigEndian", func(t *testing.T) {
+		var dst [len(data.Uint64BigEndian)]uint64
+		n := ToU64(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI64", dst, n, data.Uint64BigEndian, len(data.Bytes))
+	})
+	t.Run("ToU64LittleEndian", func(t *testing.T) {
+		var dst [len(data.Uint64BigEndian)]uint64
+		n := ToU64(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI64", dst, n, data.Uint64LittleEndian, len(data.Bytes))
+	})
+	t.Run("ToF64BigEndian", func(t *testing.T) {
+		var dst [len(data.Float64BigEndian)]float64
+		n := ToF64(data.Bytes[:], dst[:], rotateBigEndian)
+		checkCopy(t, "ToI64", dst, n, data.Float64BigEndian, len(data.Bytes))
+	})
+	t.Run("ToF64LittleEndian", func(t *testing.T) {
+		var dst [len(data.Float64BigEndian)]float64
+		n := ToF64(data.Bytes[:], dst[:], !rotateBigEndian)
+		checkCopy(t, "ToI64", dst, n, data.Float64LittleEndian, len(data.Bytes))
+	})
 }
 
-func (t *testSlice) TestTo32(is is.IS) {
-	var dst [len(data.Int32BigEndian)]int32
-	var dst2 [len(data.Int32BigEndian)]uint32
-	var dst3 [len(data.Int32BigEndian)]float32
+func TestFromSlice(t *testing.T) {
+	t.Parallel()
 
-	n := ToI32(data.Bytes[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Int32BigEndian, "Incorrect copy")
+	fromSlice := func(name string, src func(bigEndian bool) interface{}) {
+		var dst [len(data.Bytes)]byte
+		n, err := FromSlice(src(true), dst[:], rotateBigEndian)
+		checkSlice(t, name, err, dst, n, data.Bytes, len(data.Bytes))
 
-	n = ToI32(data.Bytes[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Int32LittleEndian, "Incorrect copy")
-
-	n = ToU32(data.Bytes[:], dst2[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst2 == data.Uint32BigEndian, "Incorrect copy")
-
-	n = ToU32(data.Bytes[:], dst2[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst2 == data.Uint32LittleEndian, "Incorrect copy")
-
-	n = ToF32(data.Bytes[:], dst3[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst3 == data.Float32BigEndian, "Incorrect copy")
-
-	n = ToF32(data.Bytes[:], dst3[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst3 == data.Float32LittleEndian, "Incorrect copy")
-}
-
-func (t *testSlice) TestFrom64(is is.IS) {
-	var dst [len(data.Bytes)]byte
-	n := FromI64(data.Int64BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromI64(data.Int64LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromU64(data.Uint64BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromU64(data.Uint64LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromF64(data.Float64BigEndian[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-
-	n = FromF64(data.Float64LittleEndian[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Bytes, "Incorrect copy")
-}
-
-func (t *testSlice) TestTo64(is is.IS) {
-	var dst [len(data.Int64BigEndian)]int64
-	var dst2 [len(data.Int64BigEndian)]uint64
-	var dst3 [len(data.Int64BigEndian)]float64
-
-	n := ToI64(data.Bytes[:], dst[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Int64BigEndian, "Incorrect copy")
-
-	n = ToI64(data.Bytes[:], dst[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst == data.Int64LittleEndian, "Incorrect copy")
-
-	n = ToU64(data.Bytes[:], dst2[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst2 == data.Uint64BigEndian, "Incorrect copy")
-
-	n = ToU64(data.Bytes[:], dst2[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst2 == data.Uint64LittleEndian, "Incorrect copy")
-
-	n = ToF64(data.Bytes[:], dst3[:], t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst3 == data.Float64BigEndian, "Incorrect copy")
-
-	n = ToF64(data.Bytes[:], dst3[:], !t.rotateBigEndian)
-	is.True(n == len(data.Bytes), "Not all bytes copied")
-	is.True(dst3 == data.Float64LittleEndian, "Incorrect copy")
-}
-
-func (t *testSlice) TestFrom(is is.IS) {
-	var dst [len(data.Bytes)]byte
-
-	for i, d := range data.AllBigEndian {
-		n, err := FromSlice(d, dst[:], t.rotateBigEndian)
-		is.Nil(err, "unexpected error")
-		is.True(n == len(data.Bytes), "Not All bytes copied")
-		is.True(dst == data.Bytes, "Incorrect copy", dst, data.Bytes, i)
-
-		n, err = FromValue(reflect.ValueOf(d), dst[:], t.rotateBigEndian)
-		is.Nil(err, "unexpected error")
-		is.True(n == len(data.Bytes), "Not All bytes copied")
-		is.True(dst == data.Bytes, "Incorrect copy")
+		dst = [len(data.Bytes)]byte{}
+		n, err = FromSlice(src(false), dst[:], !rotateBigEndian)
+		checkSlice(t, name, err, dst, n, data.Bytes, len(data.Bytes))
 	}
 
-	for _, d := range data.AllLittleEndian {
-		n, err := FromValue(reflect.ValueOf(d), dst[:], !t.rotateBigEndian)
-		is.Nil(err, "unexpected error")
-		is.True(n == len(data.Bytes), "Not All bytes copied")
-		is.True(dst == data.Bytes, "Incorrect copy")
+	fromValue := func(name string, src func(bigEndian bool) reflect.Value) {
+		var dst [len(data.Bytes)]byte
+		n, err := FromValue(src(true), dst[:], rotateBigEndian)
+		checkSlice(t, name, err, dst, n, data.Bytes, len(data.Bytes))
 
-		n, err = FromSlice(d, dst[:], !t.rotateBigEndian)
-		is.Nil(err, "unexpected error")
-		is.True(n == len(data.Bytes), "Not All bytes copied")
-		is.True(dst == data.Bytes, "Incorrect copy")
+		dst = [len(data.Bytes)]byte{}
+		n, err = FromValue(src(false), dst[:], !rotateBigEndian)
+		checkSlice(t, name, err, dst, n, data.Bytes, len(data.Bytes))
 	}
 
+	for _, d := range data.TestData {
+		name := "FromSlice with element type " + d.Name()
+		fromSlice(name, d.Array)
+		fromSlice(name, d.ArrayPtr)
+		fromSlice(name, d.Slice)
+
+		name = "FromValue with element type " + d.Name()
+		fromValue(name, d.ValueArray)
+		fromValue(name, d.ValueArrayUnaddressable)
+		fromValue(name, d.ValueArrayPtr)
+		fromValue(name, d.ValueSlice)
+	}
 }
 
-func (t *testSlice) NewOf(orig reflect.Value) reflect.Value {
-	typ := orig.Type()
-	var v reflect.Value
-	switch typ.Kind() {
-	case reflect.Slice:
-		v = reflect.MakeSlice(typ, orig.Len(), orig.Len())
-	case reflect.Array:
-		v = reflect.New(typ).Elem()
-	case reflect.Ptr:
-		v = reflect.New(typ.Elem())
-	}
-	return v
-}
+func TestToSlice(t *testing.T) {
+	t.Parallel()
 
-func (t *testSlice) Compare(v1, v2 reflect.Value) bool {
-	if v1.Kind() == reflect.Ptr {
-		v1 = v1.Elem()
-		v2 = v2.Elem()
+	toSlice := func(name string, create func() interface{}, expected func(bigEndian bool) interface{}) {
+		dst := create()
+		n, err := ToSlice(data.Bytes[:], dst, rotateBigEndian)
+		checkSlice(t, name, err, dst, n, expected(true), len(data.Bytes))
+
+		dst = create()
+		n, err = ToSlice(data.Bytes[:], dst, !rotateBigEndian)
+		checkSlice(t, name, err, dst, n, expected(false), len(data.Bytes))
 	}
-	for i := 0; i < v1.Len(); i++ {
-		if v1.Index(i).Interface() != v2.Index(i).Interface() {
-			return false
+
+	toValue := func(name string, create func() reflect.Value, expected func(bigEndian bool) reflect.Value) {
+		dst := create()
+		n, err := ToValue(data.Bytes[:], dst, rotateBigEndian)
+		checkSlice(t, name, err, dst.Interface(), n, expected(true).Interface(), len(data.Bytes))
+
+		dst = create()
+		n, err = ToValue(data.Bytes[:], dst, !rotateBigEndian)
+		checkSlice(t, name, err, dst.Interface(), n, expected(false).Interface(), len(data.Bytes))
+	}
+
+	for _, d := range data.TestData {
+		name := "ToSlice with element type " + d.Name()
+		toSlice(name, d.NewArrayPtr, d.ArrayPtr)
+		toSlice(name, d.NewSlice, d.Slice)
+
+		name = "ToValue with element type " + d.Name()
+		toValue(name, d.NewArrayValue, d.ValueArray)
+		toValue(name, d.NewArrayPtrValue, d.ValueArrayPtr)
+		toValue(name, d.NewSliceValue, d.ValueSlice)
+	}
+
+	for _, d := range data.TestData {
+		dst := d.NewArray()
+		_, err := ToSlice(data.Bytes[:], dst, true)
+		if !errors.Is(err, internal.ErrUnaddressable) {
+			t.Error("ToSlice allowed unsafe copy")
+			t.FailNow()
 		}
 	}
-	return true
 }
 
-func (t *testSlice) TestSlice(is is.IS) {
-	for _, d := range data.AllBigEndian {
-		orig := reflect.ValueOf(d)
-		iface := t.NewOf(orig).Interface()
-		n, err := ToSlice(data.Bytes[:], iface, t.rotateBigEndian)
-		if orig.Kind() == reflect.Array {
-			is.True(err == internal.ErrUnaddressable, "value should be unadressable")
-		} else {
-			is.Nil(err, "unexpected error")
-			is.True(n == len(data.Bytes), "Not All bytes copied")
-			is.True(t.Compare(reflect.ValueOf(iface), orig), "incorrect copy")
-		}
-
-		v := t.NewOf(orig)
-		n, err = ToValue(data.Bytes[:], v, t.rotateBigEndian)
-		is.Nil(err, "unexpected error")
-		is.True(n == len(data.Bytes), "Not All bytes copied")
-		is.True(t.Compare(v, orig), "incorrect copy")
+func checkSlice(t *testing.T, name string, err error, v interface{}, length int, expectedValue interface{}, expectedLength int) {
+	if err != nil {
+		t.Error(name, " unexpected error", err, v, expectedValue)
+		panic(err)
 	}
+	checkCopy(t, name, v, length, expectedValue, expectedLength)
+}
 
-	for _, d := range data.AllLittleEndian {
-		orig := reflect.ValueOf(d)
-		iface := t.NewOf(orig).Interface()
-		n, err := ToSlice(data.Bytes[:], iface, !t.rotateBigEndian)
-		if orig.Kind() == reflect.Array {
-			is.True(err == internal.ErrUnaddressable, "value should be unadressable")
-		} else {
-			is.Nil(err, "unexpected error")
-			is.True(n == len(data.Bytes), "Not All bytes copied")
-			is.True(t.Compare(reflect.ValueOf(iface), orig), "incorrect copy")
-		}
-
-		v := t.NewOf(orig)
-		n, err = ToValue(data.Bytes[:], v, !t.rotateBigEndian)
-		is.Nil(err, "unexpected error")
-		is.True(n == len(data.Bytes), "Not All bytes copied")
-		is.True(t.Compare(v, orig), "incorrect copy")
+func checkCopy(t *testing.T, name string, v interface{}, length int, expectedValue interface{}, expectedLength int) {
+	if length != expectedLength {
+		t.Error("copied", length, "expected", expectedLength)
+		panic(name + " copied an incorrect number of bytes")
+	}
+	if !reflect.DeepEqual(v, expectedValue) {
+		t.Error(v, expectedValue)
+		panic(name + " copied incorrectly")
 	}
 }
 
-func (t *testSlice) TestError(is is.IS) {
-	v := [len(data.Bytes) / 2]byte{}
-	_, err := FromSlice(data.Uint16BigEndian, v[:], t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-	_, err = FromValue(reflect.ValueOf(data.Uint16BigEndian[:]), v[:], t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-	_, err = ToSlice(data.Bytes[:], v[:], t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-	_, err = ToValue(data.Bytes[:], reflect.ValueOf(v[:]), t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-
-	_, err = ToValue(data.Bytes[:], reflect.ValueOf(v), t.rotateBigEndian)
-	is.True(err == internal.ErrUnaddressable, "dst must not be addressable")
-}
-
-func (t *testSlice) TestZero(is is.IS) {
-	v := [0]byte{}
-	n, err := FromSlice(data.Uint16BigEndian[:0], v[:], t.rotateBigEndian)
-	is.True(err == nil, "unexpected error")
-	is.True(n == 0, "Incorrect bytes copied")
-
-	n, err = FromValue(reflect.ValueOf(data.Uint16BigEndian[:0]), v[:], t.rotateBigEndian)
-	is.True(err == nil, "unexpected error")
-	is.True(n == 0, "Incorrect bytes copied")
-
-	n, err = ToSlice(data.Bytes[:0], v[:], t.rotateBigEndian)
-	is.True(err == nil, "unexpected error")
-	is.True(n == 0, "Incorrect bytes copied")
-
-	n, err = ToValue(data.Bytes[:0], reflect.ValueOf(v[:]), t.rotateBigEndian)
-	is.True(err == nil, "unexpected error")
-	is.True(n == 0, "Incorrect bytes copied")
+func checkCopyFrom(t *testing.T, name string, v interface{}, length int) {
+	checkCopy(t, name, v, length, data.Bytes, len(data.Bytes))
 }

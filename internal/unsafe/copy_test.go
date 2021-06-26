@@ -12,11 +12,11 @@ func TestCopy(t *testing.T) {
 
 type copyTest struct{}
 
-//TestCopy16Large test copy16 when len(dst) < rotate16SmallSize
+// TestCopy16Large test copy16 when len(dst) < rotate16SmallSize
 func (c *copyTest) TestCopy16Small(is is.IS) {
 	var (
-		test    = [...]uint16{0xDEAD, 0xBEEF, 0xFECA}
-		testRot = [...]uint16{0xADDE, 0xEFBE, 0xCAFE}
+		test    = [...]uint16{0xDEAD, 0xBEEF, 0xAD0B, 0xFECA}
+		testRot = [...]uint16{0xADDE, 0xEFBE, 0xBAD, 0xCAFE}
 	)
 	var dst [len(test)]uint16
 
@@ -24,18 +24,15 @@ func (c *copyTest) TestCopy16Small(is is.IS) {
 		is.Fail("copy16 test is incorrect. The value of rotate16SmallSize has changed")
 	}
 
-	//test copying without rotation
+	// test copying without rotation
 	n := copy16(test[:], dst[:], false)
-	is.True(n == len(test)*2, "copy16 copied an incorrect number of bytes")
-	is.True(test == dst, "copy16 copied incorrectly")
+	c.checkCopy(is, "copy16", dst, n, test, len(test)*2)
 
 	n = copy16(test[:], dst[:], true)
-	is.True(n == len(test)*2, "copy16 copied an incorrect number of bytes")
-	is.True(testRot == dst, "copy16 copied incorrectly")
-
+	c.checkCopy(is, "copy16", dst, n, testRot, len(test)*2)
 }
 
-//TestCopy16Large test copy16 when len(dst)>= rotate16SmallSlice
+// TestCopy16Large test copy16 when len(dst)>= rotate16SmallSlice
 func (c *copyTest) TestCopy16Large(is is.IS) {
 	var (
 		test    = [...]uint16{0x0123, 0x4567, 0x89AB, 0xCDEF, 0xFEDC, 0xBA98, 0x7654, 0x3210, 0x1234, 0x5678, 0x9ABC, 0xDEFE, 0xDCBA, 0x9876}
@@ -47,14 +44,12 @@ func (c *copyTest) TestCopy16Large(is is.IS) {
 		is.Fail("copy16 test is incorrect. The value of rotate16SmallSize has changed")
 	}
 
-	//test copying without rotation
+	// test copying without rotation
 	n := copy16(test[:], dst[:], false)
-	is.True(n == len(test)*2, "copy16 copied an incorrect number of bytes")
-	is.True(test == dst, "copy16 copied incorrectly")
+	c.checkCopy(is, "copy16", dst, n, test, len(test)*2)
 
 	n = copy16(test[:], dst[:], true)
-	is.True(n == len(test)*2, "copy16 copied an incorrect number of bytes")
-	is.True(dst == testRot, "copy16 copied incorrectly")
+	c.checkCopy(is, "copy16", dst, n, testRot, len(test)*2)
 }
 
 func (c *copyTest) TestCopy32(is is.IS) {
@@ -64,14 +59,12 @@ func (c *copyTest) TestCopy32(is is.IS) {
 	)
 	var dst [len(test)]uint32
 
-	//test copying without rotation
+	// test copying without rotation
 	n := copy32(test[:], dst[:], false)
-	is.True(n == len(test)*4, "copy32 copied an incorrect number of bytes")
-	is.True(test == dst, "copy32 copied incorrectly")
+	c.checkCopy(is, "copy32", dst, n, test, len(test)*4)
 
 	n = copy32(test[:], dst[:], true)
-	is.True(n == len(test)*4, "copy32 copied an incorrect number of bytes")
-	is.True(dst == testRot, "copy32 copied incorrectly")
+	c.checkCopy(is, "copy32", dst, n, testRot, len(test)*4)
 }
 
 func (c *copyTest) TestCopy64(is is.IS) {
@@ -81,14 +74,12 @@ func (c *copyTest) TestCopy64(is is.IS) {
 	)
 	var dst [len(test)]uint64
 
-	//test copying without rotation
+	// test copying without rotation
 	n := copy64(test[:], dst[:], false)
-	is.True(n == len(test)*8, "copy64 copied an incorrect number of bytes")
-	is.True(test == dst, "copy64 copied incorrectly")
+	c.checkCopy(is, "copy64", dst, n, test, len(test)*8)
 
 	n = copy64(test[:], dst[:], true)
-	is.True(n == len(test)*8, "copy64 copied an incorrect number of bytes")
-	is.True(dst == testRot, "copy64 copied incorrectly")
+	c.checkCopy(is, "copy64", dst, n, testRot, len(test)*8)
 }
 
 func (c *copyTest) TestCopySlice(is is.IS) {
@@ -101,22 +92,23 @@ func (c *copyTest) TestCopySlice(is is.IS) {
 	var dst [len(test)]byte
 
 	n := copySlice(test[:], dst[:], 1, true)
-	is.True(n == len(test), "copySlice copied an incorrect number of bytes")
-	is.True(test == dst, "copySlice with size 1 copied incorrectly")
+	c.checkCopy(is, "copySlice with size=1", dst, n, test, len(test))
 
 	n = copySlice(test[:], dst[:], 2, true)
-	is.True(n == len(test), "copySlice copied an incorrect number of bytes")
-	is.True(testRot16 == dst, "copySlice with size 2 copied incorrectly")
+	c.checkCopy(is, "copySlice with size=2", dst, n, testRot16, len(test))
 
 	n = copySlice(test[:], dst[:], 4, true)
-	is.True(n == len(test), "copySlice copied an incorrect number of bytes")
-	is.True(testRot32 == dst, "copySlice with size 4 copied incorrectly")
+	c.checkCopy(is, "copySlice with size=4", dst, n, testRot32, len(test))
 
 	n = copySlice(test[:], dst[:], 8, true)
-	is.True(n == len(test), "copySlice copied an incorrect number of bytes")
-	is.True(testRot64 == dst, "copySlice with size 8 copied incorrectly")
+	c.checkCopy(is, "copySlice with size=8", dst, n, testRot64, len(test))
 
 	is.MustPanicCall(func() {
 		copySlice(nil, nil, 3, true) // This should never happen
 	})
+}
+
+func (c *copyTest) checkCopy(is is.IS, name string, v interface{}, length int, expectedValue interface{}, expectedLength int) {
+	is.True(length == expectedLength, name, "copied an incorrect number of bytes")
+	is.True(v == expectedValue, name, "copied incorrectly")
 }

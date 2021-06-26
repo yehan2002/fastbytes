@@ -8,6 +8,8 @@ import (
 	"github.com/yehan2002/is"
 )
 
+var rotateBigEndian = IsLittleEndian
+
 func TestUnsafe(t *testing.T) { is.Suite(t, &testUnsafe{}) }
 
 type testUnsafe struct{}
@@ -17,6 +19,7 @@ func (*testUnsafe) TestIfacePtr(is is.IS) {
 	is.True(*(*[10]int)(ifaceAddr(i)) == i, "IfacePtr returned an invalid pointer")
 }
 
+//nolint
 func (*testUnsafe) TestIfaceBytes(is is.IS) {
 	u32 := [8]uint32{0x01234567, 0x89ABCDEF, 0xFEDBCA98, 0x76543210, 0x01234567, 0x89ABCDEF, 0xFEDBCA98, 0x76543210}
 	t := reflect.TypeOf(u32)
@@ -46,7 +49,9 @@ func (*testUnsafe) TestIfaceBytes(is is.IS) {
 	r3 := u8Tou32(v3)
 	for i := range u32 {
 		v := u32[i]
-		is.True(v == r1[i] && v == r2[i] && v == r3[i], "invalid pointer returned")
+		is.True(v == r1[i], "invalid pointer returned")
+		is.True(v == r2[i], "invalid pointer returned")
+		is.True(v == r3[i], "invalid pointer returned")
 	}
 
 	v, l, err := ifaceBytes(nil, true)
@@ -70,6 +75,7 @@ func (*testUnsafe) TestIfaceBytes(is is.IS) {
 	is.True(err == internal.ErrUnsupported, "ifaceBytes returned unexpected error")
 }
 
+//nolint
 func (*testUnsafe) TestValueBytes(is is.IS) {
 	u32 := [8]uint32{0x01234567, 0x89ABCDEF, 0xFEDBCA98, 0x76543210, 0x01234567, 0x89ABCDEF, 0xFEDBCA98, 0x76543210}
 	u32V := reflect.ValueOf(&u32)
@@ -126,6 +132,7 @@ func (*testUnsafe) TestValueBytes(is is.IS) {
 
 }
 
+//nolint
 func (*testUnsafe) TestPanic(is is.IS) {
 	//This should never happen
 	is.MustPanicCall(func() { checkEndianess(0) })
