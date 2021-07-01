@@ -4,10 +4,9 @@
 package fastbytes
 
 import (
-	"reflect"
-
 	"github.com/yehan2002/fastbytes/internal/safe"
 )
 
+type provider = safe.Bytes
+
 var rotateBigEndian = true
-var provider = safe.Bytes
