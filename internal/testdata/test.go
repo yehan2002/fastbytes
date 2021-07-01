@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/yehan2002/bytes/internal"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 type testRunner struct {

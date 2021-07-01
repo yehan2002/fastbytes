@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/yehan2002/bytes/internal"
-	"github.com/yehan2002/bytes/internal/testdata"
+	"github.com/yehan2002/fastbytes/internal"
+	"github.com/yehan2002/fastbytes/internal/testdata"
 	"github.com/yehan2002/is"
 )
 

@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"math"
 
-	"github.com/yehan2002/bytes/internal"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 //Bytes byte provider that does not use unsafe

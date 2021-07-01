@@ -1,1 +1,1 @@
-package bytes_test
+package fastbytes_test

@@ -1,4 +1,4 @@
-module github.com/yehan2002/bytes
+module github.com/yehan2002/fastbytes
 
 go 1.16
 

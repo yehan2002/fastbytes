@@ -1,12 +1,12 @@
 // A package for reading and writing values from byte slices quickly
 
-package bytes
+package fastbytes
 
 import (
 	"reflect"
 
-	"github.com/yehan2002/bytes/internal"
 	"github.com/yehan2002/errors"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 const (

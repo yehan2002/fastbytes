@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"math"
 
-	"github.com/yehan2002/bytes/internal"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 // FromI8 copy bytes from []int8

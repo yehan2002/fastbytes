@@ -3,8 +3,8 @@ package unsafe
 import (
 	"reflect"
 
-	"github.com/yehan2002/bytes/internal"
-	"github.com/yehan2002/bytes/internal/safe"
+	"github.com/yehan2002/fastbytes/internal"
+	"github.com/yehan2002/fastbytes/internal/safe"
 )
 
 var safeBytes = safe.Bytes{}

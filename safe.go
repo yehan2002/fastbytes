@@ -1,12 +1,12 @@
 //go:build no_unsafe
 // +build no_unsafe
 
-package bytes
+package fastbytes
 
 import (
 	"reflect"
 
-	"github.com/yehan2002/bytes/internal/safe"
+	"github.com/yehan2002/fastbytes/internal/safe"
 )
 
 var rotateBigEndian = true

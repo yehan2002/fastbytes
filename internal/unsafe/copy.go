@@ -3,7 +3,7 @@ package unsafe
 import (
 	"math/bits"
 
-	"github.com/yehan2002/bytes/internal"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 const (

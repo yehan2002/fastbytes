@@ -1,9 +1,9 @@
-package bytes
+package fastbytes
 
 import (
 	"reflect"
 
-	"github.com/yehan2002/bytes/internal"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 type bytes struct {

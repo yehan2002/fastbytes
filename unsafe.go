@@ -1,10 +1,10 @@
 //go:build !no_unsafe
 // +build !no_unsafe
 
-package bytes
+package fastbytes
 
 import (
-	"github.com/yehan2002/bytes/internal/unsafe"
+	"github.com/yehan2002/fastbytes/internal/unsafe"
 )
 
 var rotateBigEndian = unsafe.IsLittleEndian

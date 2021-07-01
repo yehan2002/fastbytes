@@ -3,7 +3,7 @@ package safe
 import (
 	"reflect"
 
-	"github.com/yehan2002/bytes/internal"
+	"github.com/yehan2002/fastbytes/internal"
 )
 
 // FromSlice copy byte from `i` into `dst`
