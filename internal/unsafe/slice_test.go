@@ -14,7 +14,8 @@ import (
 
 var bytes = Bytes{}
 
-func TestSlice(t *testing.T) { testdata.Test(t, bytes, true) }
+func TestSlice(t *testing.T)      { testdata.Test(t, bytes, IsLittleEndian) }
+func BenchmarkSlice(t *testing.B) { testdata.Benchmark(t, bytes, IsLittleEndian) }
 
 func TestSliceErrors(t *testing.T) {
 	is.Suite(t, &testSlice{})

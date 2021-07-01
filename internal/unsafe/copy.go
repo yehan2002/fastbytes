@@ -31,9 +31,7 @@ func copy16(src, dst []uint16, rotate bool) int {
 func copy32(src, dst []uint32, rotate bool) int {
 	n := copy(dst, src)
 	if rotate {
-		for j := 0; j < len(dst); j++ {
-			dst[j] = bits.ReverseBytes32(dst[j])
-		}
+		rotate32(dst)
 	}
 	return n * internal.Uint32Bytes
 }
@@ -43,9 +41,7 @@ func copy32(src, dst []uint32, rotate bool) int {
 func copy64(src, dst []uint64, rotate bool) int {
 	n := copy(dst, src)
 	if rotate {
-		for j := 0; j < len(dst); j++ {
-			dst[j] = bits.ReverseBytes64(dst[j])
-		}
+		rotate64(dst)
 	}
 	return n * internal.Uint64Bytes
 }
@@ -87,5 +83,17 @@ func rotate16(dst []uint16) {
 
 	for ; l < len(dst); l++ {
 		dst[l] = bits.ReverseBytes16(dst[l])
+	}
+}
+
+func rotate32(dst []uint32) {
+	for j := 0; j < len(dst); j++ {
+		dst[j] = bits.ReverseBytes32(dst[j])
+	}
+}
+
+func rotate64(dst []uint64) {
+	for j := 0; j < len(dst); j++ {
+		dst[j] = bits.ReverseBytes64(dst[j])
 	}
 }

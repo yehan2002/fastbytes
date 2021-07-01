@@ -11,7 +11,9 @@ import (
 
 var bytes = Bytes{}
 
-func TestSlice(t *testing.T) { testdata.Test(t, Bytes{}, true) }
+func TestSlice(t *testing.T)      { testdata.Test(t, Bytes{}, true) }
+func BenchmarkSlice(t *testing.B) { testdata.Benchmark(t, bytes, true) }
+
 func TestSliceErrors(t *testing.T) {
 	is.Suite(t, &testSlice{})
 }
