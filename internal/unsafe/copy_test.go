@@ -1,3 +1,6 @@
+//go:build !no_unsafe
+// +build !no_unsafe
+
 package unsafe
 
 import (

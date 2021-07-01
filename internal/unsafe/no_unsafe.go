@@ -1,5 +1,5 @@
-//go:build no_unsafe
-// +build no_unsafe
+//go:build !no_unsafe
+// +build !no_unsafe
 
 package unsafe
 
