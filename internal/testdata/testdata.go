@@ -1,4 +1,4 @@
-package data
+package testdata
 
 import (
 	"encoding/binary"

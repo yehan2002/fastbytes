@@ -5,13 +5,13 @@ import (
 	"testing"
 
 	"github.com/yehan2002/bytes/internal"
-	"github.com/yehan2002/bytes/internal/data"
+	"github.com/yehan2002/bytes/internal/testdata"
 	"github.com/yehan2002/is"
 )
 
 var bytes = Bytes{}
 
-func TestSlice(t *testing.T) { data.Test(t, Bytes{}, true) }
+func TestSlice(t *testing.T) { testdata.Test(t, Bytes{}, true) }
 func TestSliceErrors(t *testing.T) {
 	is.Suite(t, &testSlice{})
 }
