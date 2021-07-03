@@ -6,12 +6,14 @@ import (
 	"reflect"
 )
 
-const size = 256
+const size = 256 * 16
 
 var bytes = func() (v [size]byte) {
-	for i := 0; i < 16; i++ {
-		for j := 0; j < 16; j++ {
-			v[i<<4|j] = byte(i<<4 | j)
+	for h := 0; h < 16; h++ {
+		for i := 0; i < 16; i++ {
+			for j := 0; j < 16; j++ {
+				v[uint16(i<<4|j)|uint16(h<<8)] = byte(i<<4|j) ^ byte(h)
+			}
 		}
 	}
 	return

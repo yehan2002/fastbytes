@@ -4,8 +4,6 @@
 package unsafe
 
 import (
-	"math/bits"
-
 	"github.com/yehan2002/fastbytes/internal/unsafe/asm"
 	"golang.org/x/sys/cpu"
 )
@@ -23,9 +21,6 @@ func copy16(src, dst []uint16, rotate bool) int {
 		}
 	} else {
 		n = int(asm.Copy16(src, dst))
-		for ; n < len(dst); n++ {
-			dst[n] = bits.ReverseBytes16(src[n])
-		}
 	}
 	return n * 2
 }
@@ -41,9 +36,6 @@ func copy32(src, dst []uint32, rotate bool) int {
 		}
 	} else {
 		n = int(asm.Copy32(src, dst))
-		for ; n < len(dst); n++ {
-			dst[n] = bits.ReverseBytes32(src[n])
-		}
 	}
 	return n * 4
 }
@@ -59,9 +51,6 @@ func copy64(src, dst []uint64, rotate bool) int {
 		}
 	} else {
 		n = int(asm.Copy64(src, dst))
-		for ; n < len(dst); n++ {
-			dst[n] = bits.ReverseBytes64(src[n])
-		}
 	}
 	return n * 8
 }

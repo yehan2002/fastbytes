@@ -18,10 +18,42 @@ TEXT ·Copy16(SB), NOSPLIT, $0-56
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
-loop:
+loop1024:
+	CMPQ    DX, $0x3f
+	JLE     loop128
+	MOVOU   (AX), X1
+	MOVOU   16(AX), X2
+	MOVOU   32(AX), X3
+	MOVOU   48(AX), X4
+	MOVOU   64(AX), X5
+	MOVOU   80(AX), X6
+	MOVOU   96(AX), X7
+	MOVOU   112(AX), X8
+	VPSHUFB X0, X1, X1
+	VPSHUFB X0, X2, X2
+	VPSHUFB X0, X3, X3
+	VPSHUFB X0, X4, X4
+	VPSHUFB X0, X5, X5
+	VPSHUFB X0, X6, X6
+	VPSHUFB X0, X7, X7
+	VPSHUFB X0, X8, X8
+	MOVOU   X1, (CX)
+	MOVOU   X2, 16(CX)
+	MOVOU   X3, 32(CX)
+	MOVOU   X4, 48(CX)
+	MOVOU   X5, 64(CX)
+	MOVOU   X6, 80(CX)
+	MOVOU   X7, 96(CX)
+	MOVOU   X8, 112(CX)
+	ADDQ    $-64, DX
+	ADDQ    $0x80, AX
+	ADDQ    $0x80, CX
+	JMP     loop1024
+
+loop128:
 	// Loop until zero bytes remain.
 	CMPQ DX, $0x07
-	JLE  done
+	JLE  tail
 
 	// Read 16 bytes from src, rotate them and copy them to dst.
 	MOVOU   (AX), X1
@@ -32,7 +64,18 @@ loop:
 	ADDQ $-8, DX
 	ADDQ $0x10, AX
 	ADDQ $0x10, CX
-	JMP  loop
+	JMP  loop128
+
+tail:
+	CMPQ DX, $0x00
+	JE   done
+	MOVW (AX), BX
+	ROLW $0x08, BX
+	MOVW BX, (CX)
+	ADDQ $0x02, AX
+	ADDQ $0x02, CX
+	DECQ DX
+	JMP  tail
 
 done:
 	MOVQ src_len+8(FP), BX
@@ -54,10 +97,42 @@ TEXT ·Copy32(SB), NOSPLIT, $0-56
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
-loop:
+loop1024:
+	CMPQ    DX, $0x1f
+	JLE     loop128
+	MOVOU   (AX), X1
+	MOVOU   16(AX), X2
+	MOVOU   32(AX), X3
+	MOVOU   48(AX), X4
+	MOVOU   64(AX), X5
+	MOVOU   80(AX), X6
+	MOVOU   96(AX), X7
+	MOVOU   112(AX), X8
+	VPSHUFB X0, X1, X1
+	VPSHUFB X0, X2, X2
+	VPSHUFB X0, X3, X3
+	VPSHUFB X0, X4, X4
+	VPSHUFB X0, X5, X5
+	VPSHUFB X0, X6, X6
+	VPSHUFB X0, X7, X7
+	VPSHUFB X0, X8, X8
+	MOVOU   X1, (CX)
+	MOVOU   X2, 16(CX)
+	MOVOU   X3, 32(CX)
+	MOVOU   X4, 48(CX)
+	MOVOU   X5, 64(CX)
+	MOVOU   X6, 80(CX)
+	MOVOU   X7, 96(CX)
+	MOVOU   X8, 112(CX)
+	ADDQ    $-32, DX
+	ADDQ    $0x80, AX
+	ADDQ    $0x80, CX
+	JMP     loop1024
+
+loop128:
 	// Loop until zero bytes remain.
 	CMPQ DX, $0x03
-	JLE  done
+	JLE  tail
 
 	// Read 16 bytes from src, rotate them and copy them to dst.
 	MOVOU   (AX), X1
@@ -68,7 +143,18 @@ loop:
 	ADDQ $-4, DX
 	ADDQ $0x10, AX
 	ADDQ $0x10, CX
-	JMP  loop
+	JMP  loop128
+
+tail:
+	CMPQ   DX, $0x00
+	JE     done
+	MOVL   (AX), BX
+	BSWAPL BX
+	MOVL   BX, (CX)
+	ADDQ   $0x04, AX
+	ADDQ   $0x04, CX
+	DECQ   DX
+	JMP    tail
 
 done:
 	MOVQ src_len+8(FP), BX
@@ -90,10 +176,42 @@ TEXT ·Copy64(SB), NOSPLIT, $0-56
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
-loop:
+loop1024:
+	CMPQ    DX, $0x0f
+	JLE     loop128
+	MOVOU   (AX), X1
+	MOVOU   16(AX), X2
+	MOVOU   32(AX), X3
+	MOVOU   48(AX), X4
+	MOVOU   64(AX), X5
+	MOVOU   80(AX), X6
+	MOVOU   96(AX), X7
+	MOVOU   112(AX), X8
+	VPSHUFB X0, X1, X1
+	VPSHUFB X0, X2, X2
+	VPSHUFB X0, X3, X3
+	VPSHUFB X0, X4, X4
+	VPSHUFB X0, X5, X5
+	VPSHUFB X0, X6, X6
+	VPSHUFB X0, X7, X7
+	VPSHUFB X0, X8, X8
+	MOVOU   X1, (CX)
+	MOVOU   X2, 16(CX)
+	MOVOU   X3, 32(CX)
+	MOVOU   X4, 48(CX)
+	MOVOU   X5, 64(CX)
+	MOVOU   X6, 80(CX)
+	MOVOU   X7, 96(CX)
+	MOVOU   X8, 112(CX)
+	ADDQ    $-16, DX
+	ADDQ    $0x80, AX
+	ADDQ    $0x80, CX
+	JMP     loop1024
+
+loop128:
 	// Loop until zero bytes remain.
 	CMPQ DX, $0x01
-	JLE  done
+	JLE  tail
 
 	// Read 16 bytes from src, rotate them and copy them to dst.
 	MOVOU   (AX), X1
@@ -104,7 +222,18 @@ loop:
 	ADDQ $-2, DX
 	ADDQ $0x10, AX
 	ADDQ $0x10, CX
-	JMP  loop
+	JMP  loop128
+
+tail:
+	CMPQ   DX, $0x00
+	JE     done
+	MOVQ   (AX), BX
+	BSWAPQ BX
+	MOVQ   BX, (CX)
+	ADDQ   $0x08, AX
+	ADDQ   $0x08, CX
+	DECQ   DX
+	JMP    tail
 
 done:
 	MOVQ src_len+8(FP), BX
