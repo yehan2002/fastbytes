@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/yehan2002/fastbytes/internal"
+	"github.com/yehan2002/is"
 )
 
 type testRunner struct {
@@ -334,10 +335,12 @@ func (r *testRunner) checkCopy(t *testing.T, name string, v interface{}, length 
 		panic(name + " copied an incorrect number of bytes")
 	}
 	if !reflect.DeepEqual(v, expectedValue) {
-		t.Error("Got:", v)
-		t.Error("Expected:", expectedValue)
+		is := is.New(t)
+		is.Equal(v, expectedValue)
+		/* t.Errorf("Got: %#v", v)
+		t.Errorf("Expected: %#v", expectedValue)
 
-		panic(name + " copied incorrectly")
+		panic(name + " copied incorrectly") */
 	}
 }
 
