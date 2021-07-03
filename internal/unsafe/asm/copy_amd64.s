@@ -2,23 +2,23 @@
 
 #include "textflag.h"
 
-// func Copy64(src []uint64, dst []uint64) uint64
+// func Copy16(src []uint16, dst []uint16) uint64
 // Requires: AVX, SSE, SSE2
-TEXT ·Copy64(SB), NOSPLIT, $0-56
+TEXT ·Copy16(SB), NOSPLIT, $0-56
 	MOVQ src_base+0(FP), AX
 	MOVQ dst_base+24(FP), CX
 	MOVQ src_len+8(FP), DX
 
 	// Setup byte mask for byte shuffling
-	MOVQ    $0x08090a0b0c0d0e0f, BX
+	MOVQ    $0x0e0f0c0d0a0b0809, BX
 	MOVQ    BX, X1
-	MOVQ    $0x0001020304050607, BX
+	MOVQ    $0x0607040502030001, BX
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
 loop:
 	// Loop until zero bytes remain.
-	CMPQ DX, $0x01
+	CMPQ DX, $0x07
 	JLE  done
 
 	// Read 16 bytes from src, rotate them and copy them to dst.
@@ -27,7 +27,7 @@ loop:
 	MOVOU   X1, (CX)
 
 	// Advance pointers, decrement byte count
-	ADDQ $-2, DX
+	ADDQ $-8, DX
 	ADDQ $0x10, AX
 	ADDQ $0x10, CX
 	JMP  loop
@@ -74,23 +74,23 @@ done:
 	MOVQ BX, ret+48(FP)
 	RET
 
-// func Copy16(src []uint16, dst []uint16) uint64
+// func Copy64(src []uint64, dst []uint64) uint64
 // Requires: AVX, SSE, SSE2
-TEXT ·Copy16(SB), NOSPLIT, $0-56
+TEXT ·Copy64(SB), NOSPLIT, $0-56
 	MOVQ src_base+0(FP), AX
 	MOVQ dst_base+24(FP), CX
 	MOVQ src_len+8(FP), DX
 
 	// Setup byte mask for byte shuffling
-	MOVQ    $0x0e0f0c0d0a0b0809, BX
+	MOVQ    $0x08090a0b0c0d0e0f, BX
 	MOVQ    BX, X1
-	MOVQ    $0x0607040502030001, BX
+	MOVQ    $0x0001020304050607, BX
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
 loop:
 	// Loop until zero bytes remain.
-	CMPQ DX, $0x07
+	CMPQ DX, $0x01
 	JLE  done
 
 	// Read 16 bytes from src, rotate them and copy them to dst.
@@ -99,7 +99,7 @@ loop:
 	MOVOU   X1, (CX)
 
 	// Advance pointers, decrement byte count
-	ADDQ $-8, DX
+	ADDQ $-2, DX
 	ADDQ $0x10, AX
 	ADDQ $0x10, CX
 	JMP  loop

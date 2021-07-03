@@ -2,14 +2,14 @@
 
 package asm
 
-// Copy64 copy and rotate uint64 from `src` to `dst`
+// Copy16 copy and rotate uint64 from `src` to `dst`
 //go:noescape
-func Copy64(src []uint64, dst []uint64) uint64
+func Copy16(src []uint16, dst []uint16) uint64
 
-// Copy32 copy and rotate uint32 from `src` to `dst`
+// Copy32 copy and rotate uint64 from `src` to `dst`
 //go:noescape
 func Copy32(src []uint32, dst []uint32) uint64
 
-// Copy32 copy and rotate uint32 from `src` to `dst`
+// Copy64 copy and rotate uint64 from `src` to `dst`
 //go:noescape
-func Copy16(src []uint16, dst []uint16) uint64
+func Copy64(src []uint64, dst []uint64) uint64
