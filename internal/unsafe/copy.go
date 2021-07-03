@@ -16,36 +16,6 @@ const (
 	rot16Lsb uint64 = 0x00ff00ff00ff00ff
 )
 
-// copy16 copy uint16 from src to dst.
-// If rotate is set the bytes of the uint16 are rotated
-func copy16(src, dst []uint16, rotate bool) int {
-	n := copy(dst, src)
-	if rotate {
-		rotate16(dst)
-	}
-	return n * internal.Uint16Bytes
-}
-
-// copy16 copy uint32 from src to dst.
-// If rotate is set the bytes of the uint32 are rotated
-func copy32(src, dst []uint32, rotate bool) int {
-	n := copy(dst, src)
-	if rotate {
-		rotate32(dst)
-	}
-	return n * internal.Uint32Bytes
-}
-
-// copy16 copy uint64 from src to dst.
-// If rotate is set the bytes of the uint64 are rotated
-func copy64(src, dst []uint64, rotate bool) int {
-	n := copy(dst, src)
-	if rotate {
-		rotate64(dst)
-	}
-	return n * internal.Uint64Bytes
-}
-
 // copySlice copy bytes from src to dst.
 // This converts the given src and dst to a slice with the element size of `size`.
 // The size must be one 1,2,4 or 8. Any other values will case this function to panic.
