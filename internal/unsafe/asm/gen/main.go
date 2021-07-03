@@ -13,6 +13,7 @@ func main() {
 	copySlice(16, 0x0E0F_0C0D_0A0B_0809, 0x0607_0405_0203_0001)
 	copySlice(32, 0x0C0D0E0F_08090A0B, 0x040506070_0010203)
 	copySlice(64, 0x08090A0B0C0D0E0F, 0x0001020304050607)
+	build.ConstraintExpr("amd64,!purego")
 	build.Generate()
 }
 
