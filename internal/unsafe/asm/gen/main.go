@@ -32,13 +32,14 @@ func copySlice(size int, shuffle1, shuffle2 uint64) {
 	xmm := build.XMM()
 	tmp := build.GP64()
 
-	build.Comment("Setup byte mask for byte shuffling")
+	build.Comment("Setup mask for byte shuffling")
 	build.MOVQ(operand.U64(shuffle1), tmp)
 	build.MOVQ(tmp, xmm)
 	build.MOVQ(operand.U64(shuffle2), tmp)
 	build.MOVQ(tmp, mask)
 	build.MOVLHPS(xmm, mask)
 
+	build.Comment("Copy 1024 bytes at a time")
 	build.Label("loop1024")
 	build.CMPQ(n, operand.Imm(uint64(128/size)*8-1))
 	build.JLE(operand.LabelRef("loop128"))
@@ -46,19 +47,19 @@ func copySlice(size int, shuffle1, shuffle2 uint64) {
 	for i := 0; i < 7; i++ {
 		registers = append(registers, build.XMM())
 	}
-
+	build.Comment("Read 1024 bytes")
 	for i, reg := range registers {
 		build.MOVOU(operand.Mem{Base: src}.Offset(i*16), reg)
 	}
-
+	build.Comment("Shift bytes")
 	for _, reg := range registers {
 		build.VPSHUFB(mask, reg, reg)
 	}
-
+	build.Comment("Copy the bytes to dst")
 	for i, reg := range registers {
 		build.MOVOU(reg, operand.Mem{Base: dst}.Offset(i*16))
 	}
-
+	build.Comment("Advance Pointers by 128, decrement byte count")
 	build.ADDQ(operand.I32(-(128/size)*8), n)
 	build.ADDQ(operand.Imm(128), src)
 	build.ADDQ(operand.Imm(128), dst)
@@ -80,6 +81,7 @@ func copySlice(size int, shuffle1, shuffle2 uint64) {
 	build.ADDQ(operand.Imm(16), dst)
 	build.JMP(operand.LabelRef("loop128"))
 
+	build.Comment("Copy any leftover bytes")
 	build.Label("tail")
 	build.CMPQ(n, operand.Imm(0))
 	build.JE(operand.LabelRef("done"))
@@ -112,7 +114,6 @@ func copySlice(size int, shuffle1, shuffle2 uint64) {
 	build.Label("done")
 	length := build.Load(build.Param("src").Len(), tmp)
 	build.SUBQ(n, length)
-
 	build.Store(length, build.ReturnIndex(0))
 	build.RET()
 }

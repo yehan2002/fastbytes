@@ -11,24 +11,29 @@ TEXT ·Copy16(SB), NOSPLIT, $0-56
 	MOVQ dst_base+24(FP), CX
 	MOVQ src_len+8(FP), DX
 
-	// Setup byte mask for byte shuffling
+	// Setup mask for byte shuffling
 	MOVQ    $0x0e0f0c0d0a0b0809, BX
 	MOVQ    BX, X1
 	MOVQ    $0x0607040502030001, BX
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
+	// Copy 1024 bytes at a time
 loop1024:
-	CMPQ    DX, $0x3f
-	JLE     loop128
-	MOVOU   (AX), X1
-	MOVOU   16(AX), X2
-	MOVOU   32(AX), X3
-	MOVOU   48(AX), X4
-	MOVOU   64(AX), X5
-	MOVOU   80(AX), X6
-	MOVOU   96(AX), X7
-	MOVOU   112(AX), X8
+	CMPQ DX, $0x3f
+	JLE  loop128
+
+	// Read 1024 bytes
+	MOVOU (AX), X1
+	MOVOU 16(AX), X2
+	MOVOU 32(AX), X3
+	MOVOU 48(AX), X4
+	MOVOU 64(AX), X5
+	MOVOU 80(AX), X6
+	MOVOU 96(AX), X7
+	MOVOU 112(AX), X8
+
+	// Shift bytes
 	VPSHUFB X0, X1, X1
 	VPSHUFB X0, X2, X2
 	VPSHUFB X0, X3, X3
@@ -37,18 +42,22 @@ loop1024:
 	VPSHUFB X0, X6, X6
 	VPSHUFB X0, X7, X7
 	VPSHUFB X0, X8, X8
-	MOVOU   X1, (CX)
-	MOVOU   X2, 16(CX)
-	MOVOU   X3, 32(CX)
-	MOVOU   X4, 48(CX)
-	MOVOU   X5, 64(CX)
-	MOVOU   X6, 80(CX)
-	MOVOU   X7, 96(CX)
-	MOVOU   X8, 112(CX)
-	ADDQ    $-64, DX
-	ADDQ    $0x80, AX
-	ADDQ    $0x80, CX
-	JMP     loop1024
+
+	// Copy the bytes to dst
+	MOVOU X1, (CX)
+	MOVOU X2, 16(CX)
+	MOVOU X3, 32(CX)
+	MOVOU X4, 48(CX)
+	MOVOU X5, 64(CX)
+	MOVOU X6, 80(CX)
+	MOVOU X7, 96(CX)
+	MOVOU X8, 112(CX)
+
+	// Advance Pointers by 128, decrement byte count
+	ADDQ $-64, DX
+	ADDQ $0x80, AX
+	ADDQ $0x80, CX
+	JMP  loop1024
 
 loop128:
 	// Loop until zero bytes remain.
@@ -66,6 +75,7 @@ loop128:
 	ADDQ $0x10, CX
 	JMP  loop128
 
+	// Copy any leftover bytes
 tail:
 	CMPQ DX, $0x00
 	JE   done
@@ -90,24 +100,29 @@ TEXT ·Copy32(SB), NOSPLIT, $0-56
 	MOVQ dst_base+24(FP), CX
 	MOVQ src_len+8(FP), DX
 
-	// Setup byte mask for byte shuffling
+	// Setup mask for byte shuffling
 	MOVQ    $0x0c0d0e0f08090a0b, BX
 	MOVQ    BX, X1
 	MOVQ    $0x0405060700010203, BX
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
+	// Copy 1024 bytes at a time
 loop1024:
-	CMPQ    DX, $0x1f
-	JLE     loop128
-	MOVOU   (AX), X1
-	MOVOU   16(AX), X2
-	MOVOU   32(AX), X3
-	MOVOU   48(AX), X4
-	MOVOU   64(AX), X5
-	MOVOU   80(AX), X6
-	MOVOU   96(AX), X7
-	MOVOU   112(AX), X8
+	CMPQ DX, $0x1f
+	JLE  loop128
+
+	// Read 1024 bytes
+	MOVOU (AX), X1
+	MOVOU 16(AX), X2
+	MOVOU 32(AX), X3
+	MOVOU 48(AX), X4
+	MOVOU 64(AX), X5
+	MOVOU 80(AX), X6
+	MOVOU 96(AX), X7
+	MOVOU 112(AX), X8
+
+	// Shift bytes
 	VPSHUFB X0, X1, X1
 	VPSHUFB X0, X2, X2
 	VPSHUFB X0, X3, X3
@@ -116,18 +131,22 @@ loop1024:
 	VPSHUFB X0, X6, X6
 	VPSHUFB X0, X7, X7
 	VPSHUFB X0, X8, X8
-	MOVOU   X1, (CX)
-	MOVOU   X2, 16(CX)
-	MOVOU   X3, 32(CX)
-	MOVOU   X4, 48(CX)
-	MOVOU   X5, 64(CX)
-	MOVOU   X6, 80(CX)
-	MOVOU   X7, 96(CX)
-	MOVOU   X8, 112(CX)
-	ADDQ    $-32, DX
-	ADDQ    $0x80, AX
-	ADDQ    $0x80, CX
-	JMP     loop1024
+
+	// Copy the bytes to dst
+	MOVOU X1, (CX)
+	MOVOU X2, 16(CX)
+	MOVOU X3, 32(CX)
+	MOVOU X4, 48(CX)
+	MOVOU X5, 64(CX)
+	MOVOU X6, 80(CX)
+	MOVOU X7, 96(CX)
+	MOVOU X8, 112(CX)
+
+	// Advance Pointers by 128, decrement byte count
+	ADDQ $-32, DX
+	ADDQ $0x80, AX
+	ADDQ $0x80, CX
+	JMP  loop1024
 
 loop128:
 	// Loop until zero bytes remain.
@@ -145,6 +164,7 @@ loop128:
 	ADDQ $0x10, CX
 	JMP  loop128
 
+	// Copy any leftover bytes
 tail:
 	CMPQ   DX, $0x00
 	JE     done
@@ -169,24 +189,29 @@ TEXT ·Copy64(SB), NOSPLIT, $0-56
 	MOVQ dst_base+24(FP), CX
 	MOVQ src_len+8(FP), DX
 
-	// Setup byte mask for byte shuffling
+	// Setup mask for byte shuffling
 	MOVQ    $0x08090a0b0c0d0e0f, BX
 	MOVQ    BX, X1
 	MOVQ    $0x0001020304050607, BX
 	MOVQ    BX, X0
 	MOVLHPS X1, X0
 
+	// Copy 1024 bytes at a time
 loop1024:
-	CMPQ    DX, $0x0f
-	JLE     loop128
-	MOVOU   (AX), X1
-	MOVOU   16(AX), X2
-	MOVOU   32(AX), X3
-	MOVOU   48(AX), X4
-	MOVOU   64(AX), X5
-	MOVOU   80(AX), X6
-	MOVOU   96(AX), X7
-	MOVOU   112(AX), X8
+	CMPQ DX, $0x0f
+	JLE  loop128
+
+	// Read 1024 bytes
+	MOVOU (AX), X1
+	MOVOU 16(AX), X2
+	MOVOU 32(AX), X3
+	MOVOU 48(AX), X4
+	MOVOU 64(AX), X5
+	MOVOU 80(AX), X6
+	MOVOU 96(AX), X7
+	MOVOU 112(AX), X8
+
+	// Shift bytes
 	VPSHUFB X0, X1, X1
 	VPSHUFB X0, X2, X2
 	VPSHUFB X0, X3, X3
@@ -195,18 +220,22 @@ loop1024:
 	VPSHUFB X0, X6, X6
 	VPSHUFB X0, X7, X7
 	VPSHUFB X0, X8, X8
-	MOVOU   X1, (CX)
-	MOVOU   X2, 16(CX)
-	MOVOU   X3, 32(CX)
-	MOVOU   X4, 48(CX)
-	MOVOU   X5, 64(CX)
-	MOVOU   X6, 80(CX)
-	MOVOU   X7, 96(CX)
-	MOVOU   X8, 112(CX)
-	ADDQ    $-16, DX
-	ADDQ    $0x80, AX
-	ADDQ    $0x80, CX
-	JMP     loop1024
+
+	// Copy the bytes to dst
+	MOVOU X1, (CX)
+	MOVOU X2, 16(CX)
+	MOVOU X3, 32(CX)
+	MOVOU X4, 48(CX)
+	MOVOU X5, 64(CX)
+	MOVOU X6, 80(CX)
+	MOVOU X7, 96(CX)
+	MOVOU X8, 112(CX)
+
+	// Advance Pointers by 128, decrement byte count
+	ADDQ $-16, DX
+	ADDQ $0x80, AX
+	ADDQ $0x80, CX
+	JMP  loop1024
 
 loop128:
 	// Loop until zero bytes remain.
@@ -224,6 +253,7 @@ loop128:
 	ADDQ $0x10, CX
 	JMP  loop128
 
+	// Copy any leftover bytes
 tail:
 	CMPQ   DX, $0x00
 	JE     done
