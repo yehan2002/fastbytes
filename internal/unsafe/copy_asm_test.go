@@ -3,6 +3,4 @@
 
 package unsafe
 
-func init() {
-	canASMPtr = &canASM
-}
+func init() { canASMPtr = &canASM }
