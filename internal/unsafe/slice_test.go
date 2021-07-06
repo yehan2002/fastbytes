@@ -17,6 +17,7 @@ var bytes = Bytes{}
 func TestSlice(t *testing.T) { testdata.Test(t, bytes, IsLittleEndian) }
 
 func TestSliceErrors(t *testing.T) {
+	t.Parallel()
 	is.Suite(t, &testSlice{})
 }
 

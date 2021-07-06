@@ -11,7 +11,10 @@ import (
 	"github.com/yehan2002/is"
 )
 
-func TestUnsafe(t *testing.T) { is.Suite(t, &testUnsafe{}) }
+func TestUnsafe(t *testing.T) {
+	t.Parallel()
+	is.Suite(t, &testUnsafe{})
+}
 
 type testUnsafe struct{}
 
