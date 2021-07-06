@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 
 	"github.com/mmcloughlin/avo/build"
@@ -10,17 +11,41 @@ import (
 
 //go:generate go run . -out ./../copy_amd64.s -stubs ./../stub_amd64.go -pkg asm
 
+// shuffleMask the mask use for byte shuffling (the `VPSHUFB` instruction).
+// Each byte in the shuffle mask coresponds to a byte in a uint128.
+// The following pseudo-code shows the operation of the VPSHUFB instruction.
+// `v` and `ret` are 128bit registers.
+//
+//  func VPSHUFB(mask shuffleMask, v [16]byte) (ret [16]byte) {
+//  	for i := range mask {
+//	    	if m := mask[i]; m > 0x0F {
+//		    	ret[i] = 0
+//		    } else {
+//			    ret[i] = v[m]
+//		    }
+//	     }
+//   }
+//
+type shuffleMask [16]byte
+
+func (s shuffleMask) LSB() (lsb uint64) { return binary.LittleEndian.Uint64(s[:8]) }
+func (s shuffleMask) MSB() (msb uint64) { return binary.LittleEndian.Uint64(s[8:]) }
+
+var shuffleUint16 = shuffleMask{1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14}
+var shuffleUint32 = shuffleMask{3, 2, 1, 0, 7, 6, 5, 4, 11, 10, 9, 8, 15, 14, 13, 12}
+var shuffleUint64 = shuffleMask{7, 6, 5, 4, 3, 2, 1, 0, 15, 14, 13, 12, 11, 10, 9, 8}
+
 func main() {
-	copySlice(16, 0x0E0F_0C0D_0A0B_0809, 0x0607_0405_0203_0001)
-	copySlice(32, 0x0C0D0E0F_08090A0B, 0x040506070_0010203)
-	copySlice(64, 0x08090A0B0C0D0E0F, 0x0001020304050607)
+	copySlice(16, shuffleUint16)
+	copySlice(32, shuffleUint32)
+	copySlice(64, shuffleUint64)
 	build.ConstraintExpr("amd64,!purego")
 	build.Generate()
 }
 
 //https://stackoverflow.com/questions/56407741/reverse-byte-order-in-xmm-or-ymm-register
 
-func copySlice(size int, shuffle1, shuffle2 uint64) {
+func copySlice(size int, msk shuffleMask) {
 	build.TEXT(fmt.Sprintf("Copy%d", size), build.NOSPLIT, fmt.Sprintf("func(src []uint%d, dst []uint%d) uint64", size, size))
 	build.Pragma("noescape")
 	build.Doc(fmt.Sprintf("Copy%d copy and rotate uint64 from `src` to `dst`", size))
@@ -33,9 +58,9 @@ func copySlice(size int, shuffle1, shuffle2 uint64) {
 	tmp := build.GP64()
 
 	build.Comment("Setup mask for byte shuffling")
-	build.MOVQ(operand.U64(shuffle1), tmp)
+	build.MOVQ(operand.U64(msk.MSB()), tmp)
 	build.MOVQ(tmp, xmm)
-	build.MOVQ(operand.U64(shuffle2), tmp)
+	build.MOVQ(operand.U64(msk.LSB()), tmp)
 	build.MOVQ(tmp, mask)
 	build.MOVLHPS(xmm, mask)
 
