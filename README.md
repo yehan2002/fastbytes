@@ -10,7 +10,7 @@ Floats and all signed/unsigned integers except uint and int can be translated by
 
 ## Usage
 
-[GoDoc](https://pkg.go.dev/yehan2002/fastbytes)
+[GoDoc](https://pkg.go.dev/github.com/yehan2002/fastbytes)
 
 
 #### Usage of assembly code
