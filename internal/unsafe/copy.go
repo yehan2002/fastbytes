@@ -56,12 +56,14 @@ func rotate16(dst []uint16) {
 	}
 }
 
+// rotate32 rotate the bytes in the given slice.
 func rotate32(dst []uint32) {
 	for j := 0; j < len(dst); j++ {
 		dst[j] = bits.ReverseBytes32(dst[j])
 	}
 }
 
+// rotate64 rotate the bytes in the given slice.
 func rotate64(dst []uint64) {
 	for j := 0; j < len(dst); j++ {
 		dst[j] = bits.ReverseBytes64(dst[j])
