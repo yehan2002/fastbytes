@@ -48,7 +48,7 @@ func IsSafeSlice(t reflect.Type) bool {
 
 // CanFitCopyFrom returns if dst is large enough to fit src if src has a element size of `size`
 func CanFitCopyFrom(src, dst, size int) bool {
-	return dst >= size && src*size <= dsthttps://github.com/yehan2002/fastbytes/blob/main/internal/util.go
+	return dst >= size && src*size <= dst
 }
 
 // CanFitCopyTo returns if dst is large enough to fit src if dst has a element size of `size`
