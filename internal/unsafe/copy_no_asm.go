@@ -1,5 +1,6 @@
-//go:build purego && !no_unsafe
-// +build purego,!no_unsafe
+//go:build (!amd64 || purego) && !no_unsafe
+// +build !amd64 purego
+// +build !no_unsafe
 
 package unsafe
 
