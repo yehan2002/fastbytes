@@ -9,9 +9,10 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
         go: [ '1.16', '1.17.0-beta1' ]
     steps:
     - uses: actions/checkout@v2
