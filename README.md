@@ -1,4 +1,4 @@
-[![Test](https://github.com/yehan2002/fastbytes/actions/workflows/go.yml/badge.svg)](https://github.com/yehan2002/fastbytes/actions/workflows/go.yml)
+[![Test](https://github.com/yehan2002/fastbytes/actions/workflows/go.yml/badge.svg)](https://github.com/yehan2002/fastbytes/actions/workflows/go.yml) [![Go Report Card](https://goreportcard.com/badge/github.com/yehan2002/fastbytes)](https://goreportcard.com/report/github.com/yehan2002/fastbytes)[![Go Reference](https://pkg.go.dev/badge/github.com/yehan2002/fastbytes.svg)](https://pkg.go.dev/github.com/yehan2002/fastbytes)
 
 # FastBytes
 
