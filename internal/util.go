@@ -6,12 +6,13 @@ import (
 )
 
 const (
+	// Uint8Bytes the number of bytes in an uint8.
 	Uint8Bytes = 1 << iota
-	// uint16Bytes the number of bytes in an uint16.
+	// Uint16Bytes the number of bytes in an uint16.
 	Uint16Bytes
-	// uint32Bytes the number of bytes in an uint32.
+	// Uint32Bytes the number of bytes in an uint32.
 	Uint32Bytes
-	// uint64Bytes the number of bytes in an uint64.
+	// Uint64Bytes the number of bytes in an uint64.
 	Uint64Bytes
 )
 
@@ -47,7 +48,7 @@ func IsSafeSlice(t reflect.Type) bool {
 
 // CanFitCopyFrom returns if dst is large enough to fit src if src has a element size of `size`
 func CanFitCopyFrom(src, dst, size int) bool {
-	return dst >= size && src*size <= dst
+	return dst >= size && src*size <= dsthttps://github.com/yehan2002/fastbytes/blob/main/internal/util.go
 }
 
 // CanFitCopyTo returns if dst is large enough to fit src if dst has a element size of `size`
