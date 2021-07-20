@@ -5,7 +5,6 @@ package unsafe
 
 import (
 	"reflect"
-	"runtime"
 	"unsafe"
 
 	"github.com/yehan2002/fastbytes/internal"
@@ -24,49 +23,37 @@ func sliceOf(data unsafe.Pointer, length int) (v []byte) {
 // u8Tou16 converts the given byte slice to a uint16 slice
 // The returned  slice has a length of `len(v)/2`
 // This function panics if slice is shorter than 2
-func u8Tou16(d []byte) (v []uint16) {
-	_ = d[:2]
-	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
-	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/internal.Uint16Bytes, len(d)/internal.Uint16Bytes
-	runtime.KeepAlive(d)
-	return
+func u8Tou16(d []byte) []uint16 {
+	l := len(d) / internal.Uint16Bytes
+	d = d[:l:l]
+	return *(*[]uint16)(unsafe.Pointer(&d))
 }
 
 // u8Tou32 converts the given byte slice to a uint32 slice
 // The returned  slice has a length of `len(v)/4`
 // This function panics if slice is shorter than 4
-func u8Tou32(d []byte) (v []uint32) {
-	_ = d[:4]
-	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
-	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/internal.Uint32Bytes, len(d)/internal.Uint32Bytes
-	runtime.KeepAlive(d)
-	return
+func u8Tou32(d []byte) []uint32 {
+	l := len(d) / internal.Uint32Bytes
+	d = d[:l:l]
+	return *(*[]uint32)(unsafe.Pointer(&d))
 }
 
 // u8Tou64 converts the given byte slice to a uint64 slice
 // The returned  slice has a length of `len(v)/8`
 // This function panics if slice is shorter than 8
-func u8Tou64(d []byte) (v []uint64) {
-	_ = d[:8]
-	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
-	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/internal.Uint64Bytes, len(d)/internal.Uint64Bytes
-	runtime.KeepAlive(d)
-	return
+func u8Tou64(d []byte) []uint64 {
+	l := len(d) / internal.Uint64Bytes
+	d = d[:l:l]
+	return *(*[]uint64)(unsafe.Pointer(&d))
 }
 
 // u16Tou64 converts the given uint16 slice to a uint64 slice
 // The returned  slice has a length of `len(v)/4`
 // This function panics if slice is shorter than 4
-func u16Tou64(d []uint16) (v []uint64) {
-	_ = d[:4]
-	slice := (*reflect.SliceHeader)(unsafe.Pointer(&v))
-	slice.Data = uintptr(unsafe.Pointer(&d[0]))
-	slice.Len, slice.Cap = len(d)/uint64Uint16s, len(d)/uint64Uint16s
-	runtime.KeepAlive(d)
-	return
+func u16Tou64(d []uint16) []uint64 {
+	l := len(d) / uint64Uint16s
+	d = d[:l:l]
+	return *(*[]uint64)(unsafe.Pointer(&d))
 }
 
 // f64Tou64 converts the given float64 slice to a uint64 slice
