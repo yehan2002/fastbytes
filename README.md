@@ -19,4 +19,4 @@ To disable the usage of assembly set the `purego` build tag when building.
 
 #### Usage of `unsafe.Pointer`
 
-This package uses the `unsafe` package to covert between slice/array types and to extract pointers from `interface{}` values. To disable the usage of unsafe set the `no_unsafe` build tag when building. Note that this also disabled the usage of assembly.
+This package uses the `unsafe` package to covert between slice/array types and to extract pointers from `interface{}` values. To disable the usage of unsafe set the `no_unsafe` build tag when building. Note that this also disables the usage of assembly.
