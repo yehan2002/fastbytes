@@ -6,19 +6,17 @@ package unsafe
 import (
 	"testing"
 
+	"github.com/yehan2002/fastbytes/internal/unsafe/asm"
 	"github.com/yehan2002/is"
 )
-
-//canASMPtr this is nil if asm is not enabled otherwise this points to `canASM`
-var canASMPtr *bool
 
 func TestCopy(t *testing.T) {
 	// This test must not be called parellely since this mutates `canASM`
 	is.Suite(t, &copyTest{})
-	if canASMPtr != nil {
-		*canASMPtr = false
+	if asm.CanASM {
+		asm.CanASM = false
 		is.Suite(t, &copyTest{})
-		*canASMPtr = true
+		asm.CanASM = true
 	}
 }
 

@@ -3,6 +3,9 @@
 
 package asm
 
+//CanASM this reports if assembly functions provided by this package can be used
+var CanASM = false
+
 // Copy64 copy and rotate uint64 from `src` to `dst`
 func Copy64(src []uint64, dst []uint64) uint64 { panic("not available") }
 
