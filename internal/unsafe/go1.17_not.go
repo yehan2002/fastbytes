@@ -6,8 +6,6 @@ package unsafe
 import (
 	"reflect"
 	"unsafe"
-
-	"github.com/yehan2002/fastbytes/internal"
 )
 
 // sliceOf creates a new byte slice from the given pointer.
@@ -24,7 +22,7 @@ func sliceOf(data unsafe.Pointer, length int) (v []byte) {
 // The returned  slice has a length of `len(v)/2`
 // This function panics if slice is shorter than 2
 func u8Tou16(d []byte) []uint16 {
-	l := len(d) / internal.Uint16Bytes
+	l := len(d) / 2
 	d = d[:l:l]
 	return *(*[]uint16)(unsafe.Pointer(&d))
 }
@@ -33,7 +31,7 @@ func u8Tou16(d []byte) []uint16 {
 // The returned  slice has a length of `len(v)/4`
 // This function panics if slice is shorter than 4
 func u8Tou32(d []byte) []uint32 {
-	l := len(d) / internal.Uint32Bytes
+	l := len(d) / 4
 	d = d[:l:l]
 	return *(*[]uint32)(unsafe.Pointer(&d))
 }
@@ -42,7 +40,7 @@ func u8Tou32(d []byte) []uint32 {
 // The returned  slice has a length of `len(v)/8`
 // This function panics if slice is shorter than 8
 func u8Tou64(d []byte) []uint64 {
-	l := len(d) / internal.Uint64Bytes
+	l := len(d) / 8
 	d = d[:l:l]
 	return *(*[]uint64)(unsafe.Pointer(&d))
 }
@@ -51,7 +49,7 @@ func u8Tou64(d []byte) []uint64 {
 // The returned  slice has a length of `len(v)/4`
 // This function panics if slice is shorter than 4
 func u16Tou64(d []uint16) []uint64 {
-	l := len(d) / uint64Uint16s
+	l := len(d) / 4
 	d = d[:l:l]
 	return *(*[]uint64)(unsafe.Pointer(&d))
 }

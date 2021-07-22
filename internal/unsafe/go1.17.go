@@ -14,7 +14,6 @@ func sliceOf(ptr unsafe.Pointer, length int) []byte { return unsafe.Slice((*byte
 // The returned  slice has a length of `len(v)/2`
 // This function panics if slice is shorter than 2
 func u8Tou16(d []byte) []uint16 {
-	_ = d[:2]
 	return unsafe.Slice((*uint16)(unsafe.Pointer(&d[0])), len(d)/2)
 }
 
@@ -22,7 +21,6 @@ func u8Tou16(d []byte) []uint16 {
 // The returned  slice has a length of `len(v)/4`
 // This function panics if slice is shorter than 4
 func u8Tou32(d []byte) []uint32 {
-	_ = d[:4]
 	return unsafe.Slice((*uint32)(unsafe.Pointer(&d[0])), len(d)/4)
 }
 
@@ -30,7 +28,6 @@ func u8Tou32(d []byte) []uint32 {
 // The returned  slice has a length of `len(v)/8`
 // This function panics if slice is shorter than 8
 func u8Tou64(d []byte) []uint64 {
-	_ = d[:8]
 	return unsafe.Slice((*uint64)(unsafe.Pointer(&d[0])), len(d)/8)
 }
 
@@ -38,7 +35,6 @@ func u8Tou64(d []byte) []uint64 {
 // The returned  slice has a length of `len(v)/4`
 // This function panics if slice is shorter than 4
 func u16Tou64(d []uint16) []uint64 {
-	_ = d[:4]
 	return unsafe.Slice((*uint64)(unsafe.Pointer(&d[0])), len(d)/4)
 }
 

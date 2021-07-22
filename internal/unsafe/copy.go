@@ -7,7 +7,6 @@ import (
 	"math/bits"
 	"unsafe"
 
-	"github.com/yehan2002/fastbytes/internal"
 	"github.com/yehan2002/fastbytes/internal/unsafe/asm"
 )
 
@@ -19,8 +18,14 @@ const (
 )
 
 // copy16 copy uint16 from src to dst.
-// If rotate is set the bytes of the uint16 are rotated
+// If rotate is set the bytes of the uint16 are rotated.
 func copy16(src, dst []uint16, rotate bool) int {
+	if len(src) == 0 || len(dst) == 0 {
+		return 0
+	} else if len(src) > len(dst) {
+		src = src[:len(dst)]
+	}
+
 	var n int
 	if !rotate || !asm.CanASM || checkOverlap16(src, dst) {
 		n = copy(dst, src)
@@ -34,8 +39,14 @@ func copy16(src, dst []uint16, rotate bool) int {
 }
 
 // copy16 copy uint32 from src to dst.
-// If rotate is set the bytes of the uint32 are rotated
+// If rotate is set the bytes of the uint32 are rotated.
 func copy32(src, dst []uint32, rotate bool) int {
+	if len(src) == 0 || len(dst) == 0 {
+		return 0
+	} else if len(src) > len(dst) {
+		src = src[:len(dst)]
+	}
+
 	var n int
 	if !rotate || !asm.CanASM || checkOverlap32(src, dst) {
 		n = copy(dst, src)
@@ -49,8 +60,14 @@ func copy32(src, dst []uint32, rotate bool) int {
 }
 
 // copy16 copy uint64 from src to dst.
-// If rotate is set the bytes of the uint64 are rotated
+// If rotate is set the bytes of the uint64 are rotated.
 func copy64(src, dst []uint64, rotate bool) int {
+	if len(src) == 0 || len(dst) == 0 {
+		return 0
+	} else if len(src) > len(dst) {
+		src = src[:len(dst)]
+	}
+
 	var n int
 	if !rotate || !asm.CanASM || checkOverlap64(src, dst) {
 		n = copy(dst, src)
@@ -68,16 +85,16 @@ func copy64(src, dst []uint64, rotate bool) int {
 // The size must be one 1,2,4 or 8. Any other values will case this function to panic.
 // If rotate is set the bytes of the dst are rotated according to the given size.
 // This function assumes that the given slices are at least one byte long.
-func copySlice(src, dst []byte, size int, rotate bool) int {
+func copySlice(s, d []byte, size int, rotate bool) int {
 	switch size {
-	case internal.Uint8Bytes:
-		return copy(dst, src)
-	case internal.Uint16Bytes:
-		return copy16(u8Tou16(src), u8Tou16(dst), rotate)
-	case internal.Uint32Bytes:
-		return copy32(u8Tou32(src), u8Tou32(dst), rotate)
-	case internal.Uint64Bytes:
-		return copy64(u8Tou64(src), u8Tou64(dst), rotate)
+	case 1:
+		return copy(d, s)
+	case 2:
+		return copy16(u8Tou16(s), u8Tou16(d), rotate)
+	case 4:
+		return copy32(u8Tou32(s), u8Tou32(d), rotate)
+	case 8:
+		return copy64(u8Tou64(s), u8Tou64(d), rotate)
 	}
 	panic("invalid byte size provided")
 }
@@ -93,9 +110,9 @@ func rotate16(dst []uint16) {
 		d := u16Tou64(dst)
 		for j := 0; j < len(d); j++ {
 			var u = d[j]
-			d[j] = (u&rot16Msb)>>uint8Bits | (u&rot16Lsb)<<uint8Bits
+			d[j] = (u&rot16Msb)>>8 | (u&rot16Lsb)<<8
 		}
-		l = len(d) * uint64Uint16s
+		l = len(d) * 4
 	}
 
 	for ; l < len(dst); l++ {

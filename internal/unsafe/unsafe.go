@@ -11,12 +11,6 @@ import (
 	"github.com/yehan2002/fastbytes/internal"
 )
 
-const (
-	uint64Uint16s = internal.Uint64Bytes / internal.Uint16Bytes
-	// uint8Bits the number of bits in a uint8.
-	uint8Bits = 8
-)
-
 var errAddress = errors.New("cannot address")
 
 // IsLittleEndian this checks if the current system is little endian.

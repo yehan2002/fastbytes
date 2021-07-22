@@ -5,21 +5,9 @@ import (
 	"reflect"
 )
 
-const (
-	// Uint8Bytes the number of bytes in an uint8.
-	Uint8Bytes = 1 << iota
-	// Uint16Bytes the number of bytes in an uint16.
-	Uint16Bytes
-	// Uint32Bytes the number of bytes in an uint32.
-	Uint32Bytes
-	// Uint64Bytes the number of bytes in an uint64.
-	Uint64Bytes
-)
-
 // Error to be used by sub packages.
 // These will be overridden by bytes
 var (
-	ErrShort         = errors.New("short")
 	ErrUnsupported   = errors.New("unsupported")
 	ErrUnaddressable = errors.New("unaddressable")
 )
@@ -44,36 +32,4 @@ func IsSafeSlice(t reflect.Type) bool {
 	default:
 		return false
 	}
-}
-
-// CanFitCopyFrom returns if dst is large enough to fit src if src has a element size of `size`
-func CanFitCopyFrom(src, dst, size int) bool {
-	return dst >= size && src*size <= dst
-}
-
-// CanFitCopyTo returns if dst is large enough to fit src if dst has a element size of `size`
-func CanFitCopyTo(src, dst, size int) bool { return src >= size && src <= dst*size }
-
-// CanCopyFrom returns if src can be copied to dst
-// This returns true if src can fit in dst and len(src)>0
-func CanCopyFrom(src, dst, size int) (bool, error) {
-	if src == 0 {
-		return false, nil
-	}
-	if CanFitCopyFrom(src, dst, size) {
-		return true, nil
-	}
-	return false, ErrShort
-}
-
-// CanCopyTo returns if src can be copied to dst
-// This returns true if src can fit in dst and len(src)>0
-func CanCopyTo(src, dst, size int) (bool, error) {
-	if src == 0 {
-		return false, nil
-	}
-	if CanFitCopyTo(src, dst, size) {
-		return true, nil
-	}
-	return false, ErrShort
 }

@@ -25,14 +25,19 @@ type testSlice struct{ rotateBigEndian bool }
 
 func (t *testSlice) TestError(is is.IS) {
 	v := [1]byte{}
-	_, err := bytes.FromSlice([2]uint32{1}, v[:], t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-	_, err = bytes.FromValue(reflect.ValueOf([]uint16{1, 2}), v[:], t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-	_, err = bytes.ToSlice([]byte{1, 3, 4}, v[:], t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
-	_, err = bytes.ToValue([]byte{1, 3, 4}, reflect.ValueOf(v[:]), t.rotateBigEndian)
-	is.True(err == internal.ErrShort, "dst must be too short")
+	v2 := [1]uint64{}
+	n, err := bytes.FromSlice([2]uint32{1}, v[:], t.rotateBigEndian)
+	is.True(err == nil)
+	is.True(n == 0, "no bytes should be copied")
+	n, err = bytes.FromValue(reflect.ValueOf([]uint16{1, 2}), v[:], t.rotateBigEndian)
+	is.True(err == nil)
+	is.True(n == 0, "no bytes should be copied")
+	n, err = bytes.ToSlice([]byte{1, 3, 4}, v2[:], t.rotateBigEndian)
+	is.True(err == nil)
+	is.True(n == 0, "no bytes should be copied")
+	n, err = bytes.ToValue([]byte{1, 3, 4}, reflect.ValueOf(v2[:]), t.rotateBigEndian)
+	is.True(err == nil)
+	is.True(n == 0, "no bytes should be copied")
 
 	_, err = bytes.ToValue([]byte{1, 3, 4}, reflect.ValueOf(v), t.rotateBigEndian)
 	is.True(err == internal.ErrUnaddressable, "dst must not be addressable")
