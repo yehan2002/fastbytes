@@ -3,7 +3,7 @@ package testdata
 import (
 	"testing"
 
-	"github.com/yehan2002/fastbytes/internal"
+	"github.com/yehan2002/fastbytes/v2/internal"
 )
 
 //Bench benchmarks the given provider.

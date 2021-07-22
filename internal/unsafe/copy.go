@@ -7,7 +7,7 @@ import (
 	"math/bits"
 	"unsafe"
 
-	"github.com/yehan2002/fastbytes/internal/unsafe/asm"
+	"github.com/yehan2002/fastbytes/v2/internal/unsafe/asm"
 )
 
 const (

@@ -6,7 +6,7 @@ import (
 	"reflect"
 
 	"github.com/yehan2002/errors"
-	"github.com/yehan2002/fastbytes/internal"
+	"github.com/yehan2002/fastbytes/v2/internal"
 )
 
 const (

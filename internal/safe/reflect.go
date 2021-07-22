@@ -5,7 +5,7 @@ import (
 	"math"
 	"reflect"
 
-	"github.com/yehan2002/fastbytes/internal"
+	"github.com/yehan2002/fastbytes/v2/internal"
 )
 
 // FromValue copy from value

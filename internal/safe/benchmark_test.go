@@ -3,7 +3,7 @@ package safe
 import (
 	"testing"
 
-	"github.com/yehan2002/fastbytes/internal/testdata"
+	"github.com/yehan2002/fastbytes/v2/internal/testdata"
 )
 
 var benchmark = testdata.Benchmark(bytes, true)
