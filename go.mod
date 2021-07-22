@@ -1,4 +1,4 @@
-module github.com/yehan2002/fastbytes
+module github.com/yehan2002/fastbytes/v2
 
 go 1.17
 
