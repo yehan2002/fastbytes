@@ -2,6 +2,12 @@ module github.com/yehan2002/fastbytes/v2
 
 go 1.17
 
+// This version has a broken mod file
+retract v2.0.0
+
+// This version has incorrect import paths and will behave like v1
+retract v2.0.1
+
 require (
 	github.com/mmcloughlin/avo v0.2.0
 	github.com/yehan2002/errors v1.1.1
