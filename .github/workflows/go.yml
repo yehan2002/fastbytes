@@ -2,9 +2,13 @@ name: Test
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main 
+      - v2
   pull_request:
-    branches: [ main ]
+    branches:  
+      - main
+      - v2
 
 jobs:
 
@@ -12,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.16', '1.17.0-beta1' ]
+        go: [ '1.16', '1.17' ]
     steps:
     - uses: actions/checkout@v2
 
