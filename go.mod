@@ -11,7 +11,7 @@ retract v2.0.1
 require (
 	github.com/mmcloughlin/avo v0.2.0
 	github.com/yehan2002/errors v1.1.1
-	github.com/yehan2002/is/v2 v2.1.0
+	github.com/yehan2002/is/v2 v2.2.1
 	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57
 )
 
