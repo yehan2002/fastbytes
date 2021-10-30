@@ -162,8 +162,12 @@ func checkOverlap64(s1, s2 []uint64) (overlap bool) {
 // If the given slices overlap it is not safe to call `asm.Copy*`.
 // This function assumes that both slices are kept reachable by the caller.
 func sliceOverlap(ptr1 uintptr, ptr2 uintptr, length1 int, length2 int, size uintptr) bool {
+	if ptr2 == ptr1 {
+		return false // special case: allow copying in place
+	}
+
 	if ptr1 < ptr2 {
 		return ptr1+(uintptr(length1)*8) >= ptr2
 	}
-	return ptr2 == ptr1 || ptr2+(uintptr(length2)*size) >= ptr1
+	return ptr2+(uintptr(length2)*size) >= ptr1
 }
