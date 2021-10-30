@@ -45,39 +45,39 @@ func (b *bytes) FromU64(src []uint64, dst []byte) (n int) { return b.p.FromU64(s
 // The number of bytes copied is min(len(src)*8, len(dst))
 func (b *bytes) FromF64(src []float64, dst []byte) (n int) { return b.p.FromF64(src, dst, b.rotate) }
 
-// ToI8 converts ans copies bytes from `src` into `dst`
+// ToI8 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst))
 func (b *bytes) ToI8(src []byte, dst []int8) (n int) { return b.p.ToI8(src, dst) }
 
-// ToI16 converts ans copies bytes form `src` into `dst`
+// ToI16 converts and copies bytes form `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*2)
 func (b *bytes) ToI16(src []byte, dst []int16) (n int) { return b.p.ToI16(src, dst, b.rotate) }
 
-// ToU16 converts ans copies bytes form `src` into `dst`
+// ToU16 converts and copies bytes form `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*2)
 func (b *bytes) ToU16(src []byte, dst []uint16) (n int) { return b.p.ToU16(src, dst, b.rotate) }
 
-// ToI32 converts ans copies bytes from `src` into `dst`
+// ToI32 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*4)
 func (b *bytes) ToI32(src []byte, dst []int32) (n int) { return b.p.ToI32(src, dst, b.rotate) }
 
-// ToU32 converts ans copies bytes from `src` into `dst`
+// ToU32 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*4)
 func (b *bytes) ToU32(src []byte, dst []uint32) (n int) { return b.p.ToU32(src, dst, b.rotate) }
 
-// ToF32 converts ans copies bytes from `src` into `dst`
+// ToF32 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*4)
 func (b *bytes) ToF32(src []byte, dst []float32) (n int) { return b.p.ToF32(src, dst, b.rotate) }
 
-// ToI64 converts ans copies bytes from `src` into `dst`
+// ToI64 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*8)
 func (b *bytes) ToI64(src []byte, dst []int64) (n int) { return b.p.ToI64(src, dst, b.rotate) }
 
-// ToU64 converts ans copies bytes from `src` into `dst`
+// ToU64 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*8)
 func (b *bytes) ToU64(src []byte, dst []uint64) (n int) { return b.p.ToU64(src, dst, b.rotate) }
 
-// ToF64 converts ans copies bytes from `src` into `dst`
+// ToF64 converts and copies bytes from `src` into `dst`
 // The number of bytes copied is min(len(src), len(dst)*8)
 func (b *bytes) ToF64(src []byte, dst []float64) (n int) { return b.p.ToF64(src, dst, b.rotate) }
 
