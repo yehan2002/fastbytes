@@ -11,11 +11,11 @@ import (
 
 const (
 	// ErrUnsupported the given type is not supported.
-	// All signed and unsigned intergers except uint and int, and floats are supported
+	// All signed and unsigned integers except uint and int, and floats are supported
 	// uint and int are unsupported since their size is platform dependent.
 	ErrUnsupported = errors.Error("bytes: unsupported target/source type")
-	// ErrUnadressable the give reflect.Value cannot be addressed
-	ErrUnadressable = errors.Error("bytes: un-addressable value")
+	// ErrUnaddressable the give reflect.Value cannot be addressed
+	ErrUnaddressable = errors.Error("bytes: un-addressable value")
 )
 
 var (
@@ -107,5 +107,5 @@ var _ internal.Provider = provider{}
 
 // export errors to `internal`
 func init() {
-	internal.ErrUnsupported, internal.ErrUnaddressable = ErrUnsupported, ErrUnadressable
+	internal.ErrUnsupported, internal.ErrUnaddressable = ErrUnsupported, ErrUnaddressable
 }

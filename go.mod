@@ -1,6 +1,6 @@
 module github.com/yehan2002/fastbytes/v2
 
-go 1.17
+go 1.19
 
 // This version has a broken mod file
 retract v2.0.0
