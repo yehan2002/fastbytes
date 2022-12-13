@@ -14,7 +14,7 @@ const (
 	// All signed and unsigned integers except uint and int, and floats are supported
 	// uint and int are unsupported since their size is platform dependent.
 	ErrUnsupported = errors.Error("bytes: unsupported target/source type")
-	// ErrUnaddressable the give reflect.Value cannot be addressed
+	// ErrUnaddressable the given [reflect.Value] cannot be addressed
 	ErrUnaddressable = errors.Error("bytes: un-addressable value")
 	// ErrUnadressable typo
 	// Deprecated: Use [ErrUnaddressable] instead.
