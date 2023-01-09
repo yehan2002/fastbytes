@@ -25,7 +25,7 @@ linters:
 linters-settings:
   staticcheck:
     # Select the Go version to target. The default is '1.13'.
-    go: "1.16.5"
+    go: "1.19.3"
     # https://staticcheck.io/docs/options#checks
     checks: [ "all" ]
 
