@@ -5,18 +5,19 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/yehan2002/fastbytes/v2/internal"
 	"github.com/yehan2002/is/v2"
 )
 
 type testRunner struct {
 	t               *testing.T
-	is              is.Is
 	provider        internal.Provider
 	rotateBigEndian bool
 }
 
-//Test this tests the given provider.
+// Test this tests the given provider.
 func Test(t *testing.T, provider internal.Provider, rotateBigEndian bool) {
 	is.Suite(t, &testRunner{t: t, provider: provider, rotateBigEndian: rotateBigEndian})
 }
@@ -314,7 +315,11 @@ func (r *testRunner) checkSlice(is is.Is, name string, err error, v interface{},
 func (r *testRunner) checkCopy(is is.Is, name string, v interface{}, length int, expectedValue interface{}) {
 	is.T().Helper()
 	is(length == len(bytes), "%s copied an incorrect number of bytes. copied %d expected %d", name, length, len(bytes))
-	is.Equal(v, expectedValue, name+" copied incorrectly")
+
+	diff := cmp.Diff(v, expectedValue, cmpopts.EquateNaNs())
+	if diff != "" {
+		is.Fail(name + " copied incorrectly\nValues are not equal:\n" + diff)
+	}
 }
 
 func (r *testRunner) checkCopyFrom(is is.Is, name string, v interface{}, length int) {
