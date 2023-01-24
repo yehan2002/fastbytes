@@ -167,7 +167,7 @@ func sliceOverlap(ptr1 uintptr, ptr2 uintptr, length1 int, length2 int, size uin
 	}
 
 	if ptr1 < ptr2 {
-		return ptr1+(uintptr(length1)*8) >= ptr2
+		return ptr1+(uintptr(length1)*size) >= ptr2
 	}
 	return ptr2+(uintptr(length2)*size) >= ptr1
 }

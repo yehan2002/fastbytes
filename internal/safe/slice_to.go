@@ -5,7 +5,7 @@ import (
 	"math"
 )
 
-//Bytes byte provider that does not use unsafe
+// Bytes byte provider that does not use unsafe
 type Bytes struct{}
 
 // ToI8 copy bytes to []int8
