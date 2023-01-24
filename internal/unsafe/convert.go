@@ -1,5 +1,5 @@
-//go:build !no_unsafe && go1.17
-// +build !no_unsafe,go1.17
+//go:build !no_unsafe
+// +build !no_unsafe
 
 package unsafe
 
@@ -11,7 +11,7 @@ import "unsafe"
 func sliceOf(ptr unsafe.Pointer, length int) []byte { return unsafe.Slice((*byte)(ptr), length) }
 
 // u8Tou16 converts the given byte slice to a uint16 slice
-// The returned  slice has a length of `len(v)/2`
+// The returned  slice has a length of `len(v)/2`.
 func u8Tou16(d []byte) []uint16 {
 	if len(d) == 0 {
 		return nil

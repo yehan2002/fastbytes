@@ -10,12 +10,23 @@ import (
 	"github.com/yehan2002/fastbytes/v2/internal/unsafe/asm"
 )
 
-const (
-	// rot16Msb this has all MSB bits set for 4 uint16 represented as a single uint64.
-	rot16Msb uint64 = 0xff00ff00ff00ff00
-	// rot16Lsb this has all LSB bits set for 4 uint16 represented as a single uint64.
-	rot16Lsb uint64 = 0x00ff00ff00ff00ff
-)
+// copySlice copy bytes from src to dst.
+// This converts the given src and dst to a slice with the element size of `size`.
+// The size must be one 1,2,4 or 8. Any other values will case this function to panic.
+// If rotate is set the bytes of the dst are rotated according to the given size.
+func copySlice(s, d []byte, size int, rotate bool) int {
+	switch size {
+	case 1:
+		return copy(d, s)
+	case 2:
+		return copy16(u8Tou16(s), u8Tou16(d), rotate)
+	case 4:
+		return copy32(u8Tou32(s), u8Tou32(d), rotate)
+	case 8:
+		return copy64(u8Tou64(s), u8Tou64(d), rotate)
+	}
+	panic("invalid byte size provided")
+}
 
 // copy16 copy uint16 from src to dst.
 // If rotate is set the bytes of the uint16 are rotated.
@@ -80,27 +91,14 @@ func copy64(src, dst []uint64, rotate bool) int {
 	return n * 8
 }
 
-// copySlice copy bytes from src to dst.
-// This converts the given src and dst to a slice with the element size of `size`.
-// The size must be one 1,2,4 or 8. Any other values will case this function to panic.
-// If rotate is set the bytes of the dst are rotated according to the given size.
-// This function assumes that the given slices are at least one byte long.
-func copySlice(s, d []byte, size int, rotate bool) int {
-	switch size {
-	case 1:
-		return copy(d, s)
-	case 2:
-		return copy16(u8Tou16(s), u8Tou16(d), rotate)
-	case 4:
-		return copy32(u8Tou32(s), u8Tou32(d), rotate)
-	case 8:
-		return copy64(u8Tou64(s), u8Tou64(d), rotate)
-	}
-	panic("invalid byte size provided")
-}
-
-// rotate16SmallSize slices smaller than this will not be optimized
-const rotate16SmallSize = 12
+const (
+	// rotate16SmallSize slices smaller than this will not be optimized
+	rotate16SmallSize = 12
+	// rot16Msb this has all MSB bits set for 4 uint16 represented as a single uint64.
+	rot16Msb uint64 = 0xff00ff00ff00ff00
+	// rot16Lsb this has all LSB bits set for 4 uint16 represented as a single uint64.
+	rot16Lsb uint64 = 0x00ff00ff00ff00ff
+)
 
 // rotate16 rotate the bytes in the given slice.
 // This function is used since individually rotating uint16 is slow.

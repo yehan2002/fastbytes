@@ -11,7 +11,7 @@ import (
 )
 
 func TestCopy(t *testing.T) {
-	// This test must not be called parellely since this mutates `canASM`
+	// This test must not be called in parallel since this mutates [CanASM]
 	is.Suite(t, &copyTest{})
 	if asm.CanASM {
 		asm.CanASM = false
@@ -116,8 +116,29 @@ func (c *copyTest) TestCopySlice(is is.Is) {
 	is.Panic(func() { copySlice(nil, nil, 3, true) }, "This should never happen")
 }
 
-func (c *copyTest) checkCopy(is is.Is, name string, v interface{}, length int, expectedValue interface{}, expectedLength int) {
+func (c *copyTest) TestCopySliceWithExtra(is is.Is) {
+	var (
+		test      = [...]byte{0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF, 0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10, 0x13, 0x14, 0x15, 0xff, 0x11, 0x14, 0x33, 0x77}
+		testRot16 = [...]byte{0x23, 0x01, 0x67, 0x45, 0xAB, 0x89, 0xEF, 0xCD, 0xDC, 0xFE, 0x98, 0xBA, 0x54, 0x76, 0x10, 0x32}
+		testRot32 = [...]byte{0x67, 0x45, 0x23, 0x01, 0xEF, 0xCD, 0xAB, 0x89, 0x98, 0xBA, 0xDC, 0xFE, 0x10, 0x32, 0x54, 0x76}
+		testRot64 = [...]byte{0xEF, 0xCD, 0xAB, 0x89, 0x67, 0x45, 0x23, 0x01, 0x10, 0x32, 0x54, 0x76, 0x98, 0xBA, 0xDC, 0xFE}
+	)
+	var dst [len(test) - 8]byte
+
+	n := copySlice(test[:], dst[:], 2, true)
+	c.checkCopy(is, "copySlice with size=2", dst, n, testRot16, len(test)-8)
+
+	n = copySlice(test[:], dst[:], 4, true)
+	c.checkCopy(is, "copySlice with size=4", dst, n, testRot32, len(test)-8)
+
+	n = copySlice(test[:], dst[:], 8, true)
+	c.checkCopy(is, "copySlice with size=8", dst, n, testRot64, len(test)-8)
+
+}
+
+// checkCopy checks if `value` was copied correctly.
+func (c *copyTest) checkCopy(is is.Is, name string, value interface{}, length int, expectedValue interface{}, expectedLength int) {
 	is.T().Helper()
-	is(length == expectedLength, name, " copied an incorrect number of bytes")
-	is(v == expectedValue, name, " copied incorrectly", v, expectedValue)
+	is(length == expectedLength, "%s copied an incorrect number of bytes", name)
+	is.Equal(value, expectedValue, "%s copied incorrectly", name)
 }
