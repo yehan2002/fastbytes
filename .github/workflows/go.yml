@@ -19,7 +19,16 @@ jobs:
         go: [ '1.18', '1.19' ]
     steps:
     - uses: actions/checkout@v3
-
+    
+    - uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+          
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
