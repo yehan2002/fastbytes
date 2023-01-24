@@ -27,36 +27,47 @@ func checkEndianess(w uint16) bool {
 
 	// This should be unreachable
 	// This is kept here in case golang changes the internal representation of slices
-	panic("internal error while attempting to get hosts byte order. Use `no_unsafe` build tag to fix this.")
+	panic("fastbytes: internal error: unable to get host byte order. Use `no_unsafe` build tag to fix this.")
+}
+
+func init() {
+	var v int64
+	var z any = &v
+	if (*int64)(ifaceAddr(z)) != &v {
+		panic("fastbytes: internal error: ifaceAddr is incompatible with this go version. Use `no_unsafe` build tag to fix this.")
+	}
 }
 
 // ifaceAddr gets a pointer to the value contained inside the given interface.
 // This function depends on the internal representation of interfaces in golang and may break in future versions.
-func ifaceAddr(i interface{}) unsafe.Pointer { return (*[2]unsafe.Pointer)(unsafe.Pointer(&i))[1] }
+func ifaceAddr(i interface{}) unsafe.Pointer {
+	return (*[2]unsafe.Pointer)(unsafe.Pointer(&i))[1]
+}
 
 // valueBytes converts the given reflect.Value to a byte slice.
 // The slice returned by this function has a length and capacity of `v.Len()*element size`.
-func valueBytes(v reflect.Value) ([]byte, int, error) {
+func valueBytes(v reflect.Value) (data []byte, elementSize int, err error) {
 	if empty, err := isValidValue(v); empty || err != nil {
 		return nil, 0, err
 	}
 
 	var dataPtr unsafe.Pointer
 
-	switch v.Kind() { //nolint
+	switch v.Kind() {
 	case reflect.Slice:
-		dataPtr = unsafe.Pointer(v.Pointer())
+		dataPtr = v.UnsafePointer()
 	case reflect.Ptr:
 		v = v.Elem()
 		fallthrough
 	case reflect.Array:
-		dataPtr = unsafe.Pointer(v.UnsafeAddr())
+		// This will not panic because isValidValue has already checked if the array is addressable.
+		dataPtr = v.Addr().UnsafePointer()
 	}
 
 	size := int(v.Type().Elem().Size())
 	length := v.Len() * size
 
-	return sliceOf(dataPtr, length), size, nil
+	return unsafe.Slice((*byte)(dataPtr), length), size, nil
 }
 
 // isValidValue checks if the given value is a addressable slice, array or a pointer to a slice
@@ -105,7 +116,7 @@ func ifaceBytes(i interface{}, arrayOk bool) (v []byte, size int, err error) {
 		return nil, 0, nil
 	}
 
-	return sliceOf(ptr, len), size, nil
+	return unsafe.Slice((*byte)(ptr), len), size, nil
 }
 
 // sliceInfo gets the pointer to first element of the slice and the number of bytes till the end of the slice.
