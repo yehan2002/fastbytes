@@ -3,7 +3,7 @@
 
 package unsafe
 
-//Bytes a bytes provider that uses unsafe
+// Bytes a bytes provider that uses unsafe
 type Bytes struct{}
 
 // FromI8 copy bytes from []int8

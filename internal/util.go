@@ -13,8 +13,9 @@ var (
 )
 
 // IsSafeSlice returns if the given type is a slice or array, with a element type that can be safely converted to bytes.
-// All signed and unsigned intergers except uint and int, and floats are considered to be safe types.
-// uint and int are considered to be unsafe since their size is platform dependent.
+// Slices with the element type of uint8, uint16, uint32, uint64, int8, int16, int32, int64, float32 and float64
+// can be safely converted to bytes. uint, int, uintptr cannot safely be converted to bytes since their
+// size is platform dependant.
 func IsSafeSlice(t reflect.Type) bool {
 	if k := t.Kind(); k != reflect.Array && k != reflect.Slice {
 		if k != reflect.Ptr || t.Elem().Kind() != reflect.Array {

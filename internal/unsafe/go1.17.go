@@ -5,9 +5,9 @@ package unsafe
 
 import "unsafe"
 
-//sliceOf creates a new byte slice from the given pointer.
-//The capacity of the returned slice is the same as the length.
-//This function assumes that the caller keeps the ptr reachable.
+// sliceOf creates a new byte slice from the given pointer.
+// The capacity of the returned slice is the same as the length.
+// This function assumes that the caller keeps the ptr reachable.
 func sliceOf(ptr unsafe.Pointer, length int) []byte { return unsafe.Slice((*byte)(ptr), length) }
 
 // u8Tou16 converts the given byte slice to a uint16 slice

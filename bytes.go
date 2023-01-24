@@ -17,6 +17,7 @@ const (
 	// ErrUnaddressable the given [reflect.Value] cannot be addressed
 	ErrUnaddressable = errors.Error("bytes: un-addressable value")
 	// ErrUnadressable typo
+	//
 	// Deprecated: Use [ErrUnaddressable] instead.
 	ErrUnadressable = ErrUnaddressable
 )
