@@ -6,7 +6,7 @@ import (
 )
 
 // Error to be used by sub packages.
-// These will be overridden by bytes
+// These will be overridden by the init function in fastbytes
 var (
 	ErrUnsupported   = errors.New("unsupported")
 	ErrUnaddressable = errors.New("unaddressable")

@@ -61,6 +61,8 @@ func valueBytes(v reflect.Value) (data []byte, elementSize int, err error) {
 	case reflect.Array:
 		// This will not panic because isValidValue has already checked if the array is addressable.
 		dataPtr = v.Addr().UnsafePointer()
+	default:
+		return nil, 0, internal.ErrUnsupported
 	}
 
 	size := int(v.Type().Elem().Size())
