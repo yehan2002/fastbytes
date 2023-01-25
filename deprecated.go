@@ -11,7 +11,7 @@ const (
 
 // ByteOrder a byteorder.
 //
-// Deprecated: Use Endianess instead.
+// It is recommended to use [Endianess] instead.
 type ByteOrder interface {
 	// FromI8 converts and copies bytes from `src` into `dst`.
 	// The number of bytes copied is min(len(src), len(dst))
