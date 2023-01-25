@@ -25,6 +25,7 @@ var (
 	LittleEndian = Endianess{rotate: !rotateBigEndian}
 )
 
+// Endianess provides methods to read and write integer/float slices.
 type Endianess struct {
 	p      provider
 	rotate bool
@@ -137,6 +138,9 @@ func (b *Endianess) FromValue(src reflect.Value, dst []byte) (int, error) {
 	return b.p.FromValue(src, dst, b.rotate)
 }
 
+// IsBigEndian returns if the endianess of this struct is big endian.
+// If this returns false, the endianess is little endian.
+// This returns the endianess this struct read/writes not the system endianess.
 func (b *Endianess) IsBigEndian() bool { return b.rotate == rotateBigEndian }
 
 func (b *Endianess) fastbytes() {}

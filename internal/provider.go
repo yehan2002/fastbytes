@@ -2,7 +2,7 @@ package internal
 
 import "reflect"
 
-//Provider a provider
+// Provider a provider
 type Provider interface {
 	FromI8([]int8, []byte) int
 	FromI16([]int16, []byte, bool) int
