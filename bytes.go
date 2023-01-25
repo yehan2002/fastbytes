@@ -105,6 +105,8 @@ type ByteOrder interface {
 	// The provided value must be a type that can be safely converted to bytes.
 	// The number of bytes copied is min(len(src)* element size of dst, len(dst))
 	FromValue(src reflect.Value, dst []byte) (n int, err error)
+
+	fastbytes()
 }
 
 var _ internal.Provider = provider{}

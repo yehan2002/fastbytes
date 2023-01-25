@@ -108,3 +108,5 @@ func (b *bytes) From(src interface{}, dst []byte) (int, error) {
 func (b *bytes) FromValue(src reflect.Value, dst []byte) (int, error) {
 	return b.p.FromValue(src, dst, b.rotate)
 }
+
+func (b *bytes) fastbytes() {}
