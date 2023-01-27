@@ -10,6 +10,9 @@ on:
       - main
       - v2
 
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
+
 jobs:
 
   build:
