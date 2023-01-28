@@ -16,7 +16,7 @@ const (
 	ErrUnsupported = errors.Const("fastbytes: unsupported target/source type")
 	// ErrUnaddressable the given [reflect.Value] cannot be addressed
 	ErrUnaddressable = errors.Const("fastbytes: un-addressable value")
-	// ErrOffset returned by [Endianess.FromValue] and [Endianess.ToValue] if the given offsets are not valid.
+	// ErrOffset returned by [Endianess.FromValueOffset] and [Endianess.ToValueOffset] if the given offsets are not valid.
 	ErrOffset = errors.Const("fastbytes: invalid offsets given")
 )
 
