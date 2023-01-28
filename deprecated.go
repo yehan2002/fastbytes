@@ -84,6 +84,18 @@ type ByteOrder interface {
 	// The provided value must be a type that can be safely converted to bytes.
 	// The number of bytes copied is min(len(src)* element size of dst, len(dst))
 	FromValue(src reflect.Value, dst []byte) (n int, err error)
+	// FromValueOffset copies bytes from the given value.
+	// This is the equivalent of calling FromValue(src.Slice(start, end), dst).
+	// This avoids the allocation in [reflect.Value.Slice].
+	// The provided value must be a type that can be safely converted to bytes.
+	// The number of bytes copied is min(len(src)* element size of dst, len(dst))
+	FromValueOffset(src reflect.Value, dst []byte, start, end int) (int, error)
+	// ToValueOffset copies bytes from `src` into the given value
+	// This is the equivalent of calling ToValue(src, dst.Slice(start, end)).
+	// This avoids the allocation in [reflect.Value.Slice].
+	// The given interface must be a type that can be safely written to.
+	// The number of bytes copied is min(len(src), len(dst)* element size of dst)
+	ToValueOffset(src []byte, dst reflect.Value, start, end int) (int, error)
 
 	fastbytes()
 }

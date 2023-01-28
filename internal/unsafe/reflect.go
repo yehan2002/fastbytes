@@ -29,7 +29,7 @@ func (Bytes) FromValue(s reflect.Value, dst []byte, rotate bool) (n int, err err
 }
 
 // ToValue copies bytes from `src` into the given value
-// The given interface must be a type that can be safely written to.
+// The given [reflect.Value] must be a type that can be safely written to.
 // `d` must be large enough to fit all the bytes in `src`
 func (Bytes) ToValue(src []byte, d reflect.Value, rotate bool) (n int, err error) {
 	var dst []byte
@@ -37,6 +37,52 @@ func (Bytes) ToValue(src []byte, d reflect.Value, rotate bool) (n int, err error
 	if dst, size, err = valueBytes(d); err == nil && len(dst) != 0 {
 		return copySlice(src, dst, size, rotate), nil
 	}
+	if err == errAddress {
+		return 0, internal.ErrUnaddressable
+	}
+	return
+}
+
+// FromValueOffset copies bytes from the given value.
+// The provided value must be a type that can be safely converted to bytes.
+// The given slice must be large enough to fit all bytes in `s`
+func (Bytes) FromValueOffset(s reflect.Value, dst []byte, start, end int, rotate bool) (n int, err error) {
+	var src []byte
+	var size int
+	if src, size, err = valueBytes(s); err == nil && len(src) != 0 {
+		if err = internal.CheckOffsets(start, end, len(dst)/size); err != nil {
+			return 0, err
+		}
+
+		start *= size
+		end *= size
+		return copySlice(src, dst[start:end], size, rotate), nil
+	}
+
+	if err == errAddress {
+		return safeBytes.FromValue(s, dst, rotate && IsLittleEndian) //nolint: wrapcheck
+	}
+	return
+}
+
+// ToValueOffset copies bytes from `src` into the given value
+// The given [reflect.Value] must be a type that can be safely written to.
+// `d` must be large enough to fit all the bytes in `src`
+func (Bytes) ToValueOffset(src []byte, d reflect.Value, start, end int, rotate bool) (n int, err error) {
+	var dst []byte
+	var size int
+
+	if dst, size, err = valueBytes(d); err == nil && len(dst) != 0 {
+		if err = internal.CheckOffsets(start, end, len(dst)/size); err != nil {
+			return 0, err
+		}
+
+		start *= size
+		end *= size
+
+		return copySlice(src, dst[start:end], size, rotate), nil
+	}
+
 	if err == errAddress {
 		return 0, internal.ErrUnaddressable
 	}

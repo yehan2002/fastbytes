@@ -1,8 +1,10 @@
 package internal
 
 import (
-	"errors"
+	"fmt"
 	"reflect"
+
+	"github.com/yehan2002/errors"
 )
 
 // Error to be used by sub packages.
@@ -10,6 +12,7 @@ import (
 var (
 	ErrUnsupported   = errors.New("unsupported")
 	ErrUnaddressable = errors.New("unaddressable")
+	ErrOffset        = errors.New("offset")
 )
 
 // IsSafeSlice returns if the given type is a slice or array, with a element type that can be safely converted to bytes.
@@ -33,4 +36,17 @@ func IsSafeSlice(t reflect.Type) bool {
 	default:
 		return false
 	}
+}
+
+// CheckOffsets checks if the given offsets are valid for a slice with the given length
+func CheckOffsets(start, end, length int) error {
+	if start < 0 || end < 0 {
+		return errors.CauseStr(ErrOffset, fmt.Sprintf("offset is negative: start %d end %d", start, end))
+	} else if start > end {
+		return errors.CauseStr(ErrOffset, fmt.Sprintf("start > end: start %d end %d", start, end))
+	} else if start > length || end > length {
+		return errors.CauseStr(ErrOffset, fmt.Sprintf("offset is outside slice bounds: length %d start %d end %d", length, start, end))
+	}
+
+	return nil
 }

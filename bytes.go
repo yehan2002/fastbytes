@@ -16,6 +16,8 @@ const (
 	ErrUnsupported = errors.Const("fastbytes: unsupported target/source type")
 	// ErrUnaddressable the given [reflect.Value] cannot be addressed
 	ErrUnaddressable = errors.Const("fastbytes: un-addressable value")
+	// ErrOffset returned by [Endianess.FromValue] and [Endianess.ToValue] if the given offsets are not valid.
+	ErrOffset = errors.Const("fastbytes: invalid offsets given")
 )
 
 var (
@@ -124,6 +126,15 @@ func (b *Endianess) ToValue(src []byte, dst reflect.Value) (int, error) {
 	return b.p.ToValue(src, dst, b.rotate)
 }
 
+// ToValueOffset copies bytes from `src` into the given value
+// This is the equivalent of calling ToValue(src, dst.Slice(start, end)).
+// This avoids the allocation in [reflect.Value.Slice].
+// The given interface must be a type that can be safely written to.
+// The number of bytes copied is min(len(src), len(dst)* element size of dst)
+func (b *Endianess) ToValueOffset(src []byte, dst reflect.Value, start, end int) (int, error) {
+	return b.p.ToValueOffset(src, dst, start, end, b.rotate)
+}
+
 // From copies bytes from the given interface.
 // The provided interface must be a type that can be safely copied.
 // The number of bytes copied is min(len(src)* element size of dst, len(dst))
@@ -138,6 +149,15 @@ func (b *Endianess) FromValue(src reflect.Value, dst []byte) (int, error) {
 	return b.p.FromValue(src, dst, b.rotate)
 }
 
+// FromValueOffset copies bytes from the given value.
+// This is the equivalent of calling FromValue(src.Slice(start, end), dst).
+// This avoids the allocation in [reflect.Value.Slice].
+// The provided value must be a type that can be safely converted to bytes.
+// The number of bytes copied is min(len(src)* element size of dst, len(dst))
+func (b *Endianess) FromValueOffset(src reflect.Value, dst []byte, start, end int) (int, error) {
+	return b.p.FromValueOffset(src, dst, start, end, b.rotate)
+}
+
 // IsBigEndian returns if the endianess of this struct is big endian.
 // If this returns false, the endianess is little endian.
 // This returns the endianess this struct read/writes not the system endianess.
@@ -147,5 +167,5 @@ func (b *Endianess) fastbytes() {}
 
 // export errors to `internal`
 func init() {
-	internal.ErrUnsupported, internal.ErrUnaddressable = ErrUnsupported, ErrUnaddressable
+	internal.ErrUnsupported, internal.ErrUnaddressable, internal.ErrOffset = ErrUnsupported, ErrUnaddressable, ErrOffset
 }

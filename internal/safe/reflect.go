@@ -34,6 +34,32 @@ func (b Bytes) ToValue(src []byte, dst reflect.Value, bigEndian bool) (n int, er
 	return toValue(src, dst, bigEndian)
 }
 
+// FromValueOffset copy from value
+func (b Bytes) FromValueOffset(src reflect.Value, dst []byte, start, end int, bigEndian bool) (n int, err error) {
+	if !internal.IsSafeSlice(src.Type()) {
+		return 0, internal.ErrUnsupported
+	}
+
+	if internal.CheckOffsets(start, end, src.Len()); err != nil {
+		return 0, err
+	}
+
+	return b.FromValue(src.Slice(start, end), dst, bigEndian)
+}
+
+// ToValueOffset copy from value
+func (b Bytes) ToValueOffset(src []byte, dst reflect.Value, start, end int, bigEndian bool) (n int, err error) {
+	if !internal.IsSafeSlice(dst.Type()) {
+		return 0, internal.ErrUnsupported
+	}
+
+	if internal.CheckOffsets(start, end, dst.Len()); err != nil {
+		return 0, err
+	}
+
+	return b.ToValue(src, dst.Slice(start, end), bigEndian)
+}
+
 func fromValue(src reflect.Value, dst []byte, bigEndian bool) (n int, err error) { //nolint: cyclop, funlen
 	if src.Kind() == reflect.Ptr { // ptr to array
 		src = src.Elem()
