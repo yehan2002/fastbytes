@@ -120,8 +120,7 @@ func valueBytes(v reflect.Value) (data []byte, elementSize int, err error) {
 // isValidValue checks if the given value is a addressable slice, array or a pointer to a slice
 // with a element type that can be safety converted to bytes.
 func isValidValue(v reflect.Value) (empty bool, err error) {
-	typ := v.Type()
-	if safe := internal.IsSafeSlice(typ); !v.IsValid() || !safe {
+	if safe := internal.IsSafeSliceValue(v); !safe {
 		return false, internal.ErrUnsupported
 	} else if !(v.CanAddr() || v.Kind() == reflect.Ptr || (v.Len() > 0 && v.Index(0).CanAddr())) {
 		if v.Len() == 0 {

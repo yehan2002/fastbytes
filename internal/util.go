@@ -15,6 +15,12 @@ var (
 	ErrOffset        = errors.New("offset")
 )
 
+// IsSafeSliceValue like [IsSafeSlice] but uses a [reflect.Value] instead.
+// This function also checks if the given value is the zero value of [reflect.Value].
+func IsSafeSliceValue(v reflect.Value) bool {
+	return v.IsValid() && IsSafeSlice(v.Type())
+}
+
 // IsSafeSlice returns if the given type is a slice or array, with a element type that can be safely converted to bytes.
 // Slices with the element type of uint8, uint16, uint32, uint64, int8, int16, int32, int64, float32 and float64
 // can be safely converted to bytes. uint, int, uintptr cannot safely be converted to bytes since their

@@ -10,7 +10,7 @@ import (
 
 // FromValue copy from value
 func (b Bytes) FromValue(src reflect.Value, dst []byte, bigEndian bool) (n int, err error) {
-	if !internal.IsSafeSlice(src.Type()) {
+	if !internal.IsSafeSliceValue(src) {
 		return 0, internal.ErrUnsupported
 	}
 
@@ -23,7 +23,7 @@ func (b Bytes) FromValue(src reflect.Value, dst []byte, bigEndian bool) (n int, 
 
 // ToValue copy from value
 func (b Bytes) ToValue(src []byte, dst reflect.Value, bigEndian bool) (n int, err error) {
-	if !internal.IsSafeSlice(dst.Type()) {
+	if !internal.IsSafeSliceValue(dst) {
 		return 0, internal.ErrUnsupported
 	}
 
@@ -36,7 +36,7 @@ func (b Bytes) ToValue(src []byte, dst reflect.Value, bigEndian bool) (n int, er
 
 // FromValueOffset copy from value
 func (b Bytes) FromValueOffset(src reflect.Value, dst []byte, start, end int, bigEndian bool) (n int, err error) {
-	if !internal.IsSafeSlice(src.Type()) {
+	if !internal.IsSafeSliceValue(src) {
 		return 0, internal.ErrUnsupported
 	}
 
@@ -49,7 +49,7 @@ func (b Bytes) FromValueOffset(src reflect.Value, dst []byte, start, end int, bi
 
 // ToValueOffset copy from value
 func (b Bytes) ToValueOffset(src []byte, dst reflect.Value, start, end int, bigEndian bool) (n int, err error) {
-	if !internal.IsSafeSlice(dst.Type()) {
+	if !internal.IsSafeSliceValue(dst) {
 		return 0, internal.ErrUnsupported
 	}
 
