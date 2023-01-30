@@ -1,7 +1,7 @@
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/yehan2002/errors v1.5.3 h1:NnfrRdDCS848shW9ssPk1/mAn4+vzGTft+k42JYU6/k=
-github.com/yehan2002/errors v1.5.3/go.mod h1:qYwLUY0Z1evFblp4Z2tS1S0t2jGCvhgK8umXrsn5acQ=
+github.com/yehan2002/errors v1.5.4 h1:P6PTSO5sx2TCpLSIeDlsb27NQuIrKeSrWpS0jM7L1f4=
+github.com/yehan2002/errors v1.5.4/go.mod h1:qYwLUY0Z1evFblp4Z2tS1S0t2jGCvhgK8umXrsn5acQ=
 github.com/yehan2002/is/v2 v2.3.0 h1:R85u/quN/Nv/f9S9Tc8w3tCMqbrTwXQf5gMI9/uPDq0=
 github.com/yehan2002/is/v2 v2.3.0/go.mod h1:fM/g30H+dzFKcs9LyTOnCcjf7ZexiUTUAWUCWVw2on0=
 golang.org/x/sys v0.4.0 h1:Zr2JFtRQNX3BCZ8YtxRE9hNJYC8J6I1MVbMg6owUp18=
