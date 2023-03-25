@@ -35,10 +35,10 @@ jobs:
           go-version: 1.19
 
     - name: Test Unsafe
-      run: go test -v ./...
+      run: go test -v ./... -coverprofile=coverage_unsafe.txt
 
     - name: Test Pure Go
-      run: go test -tags="purego" -v ./... -coverprofile=coverage_unsafe.txt
+      run: go test -tags="purego" -v ./... -coverprofile=coverage_purego.txt
 
     - name: Test Safe
       run: go test -tags="no_unsafe" -v ./... -coverprofile=coverage_safe.txt
