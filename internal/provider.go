@@ -22,8 +22,8 @@ type Provider interface {
 	ToU64([]byte, []uint64, bool) int
 	ToF32([]byte, []float32, bool) int
 	ToF64([]byte, []float64, bool) int
-	FromSlice(interface{}, []byte, bool) (int, error)
-	ToSlice([]byte, interface{}, bool) (int, error)
+	FromSlice(any, []byte, bool) (int, error)
+	ToSlice([]byte, any, bool) (int, error)
 	FromValue(reflect.Value, []byte, bool) (int, error)
 	ToValue([]byte, reflect.Value, bool) (int, error)
 }

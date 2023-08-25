@@ -3,10 +3,10 @@ package safe
 import (
 	"testing"
 
-	"github.com/yehan2002/fastbytes/v2/internal/testdata"
+	"github.com/yehan2002/fastbytes/v2/internal/testutil"
 )
 
-var benchmark = testdata.Benchmark(bytes, true)
+var benchmark = testutil.Benchmark(bytes, true)
 
 func BenchmarkFrom8(b *testing.B) {
 	benchmark.BenchmarkFrom8(b)

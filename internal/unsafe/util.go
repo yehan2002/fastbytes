@@ -37,7 +37,7 @@ func checkEndianess(w uint16) bool {
 
 // ifaceAddr gets a pointer to the value contained inside the given interface.
 // This function depends on the internal representation of interfaces in golang and may break in future versions.
-func ifaceAddr(i interface{}) unsafe.Pointer {
+func ifaceAddr(i any) unsafe.Pointer {
 	return (*[2]unsafe.Pointer)(unsafe.Pointer(&i))[1]
 }
 

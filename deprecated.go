@@ -71,11 +71,11 @@ type ByteOrder interface {
 	// To copies bytes from `s` into the given slice.
 	// The given interface must be a type  that can be safely written to.
 	// The number of bytes copied is min(len(src), len(dst)* element size of dst)
-	To(src []byte, dst interface{}) (n int, err error)
+	To(src []byte, dst any) (n int, err error)
 	// From copies bytes from the given interface.
 	// The provided interface must be a type that can be safely copied.
 	// The number of bytes copied is min(len(src)* element size of dst, len(dst))
-	From(src interface{}, dst []byte) (n int, err error)
+	From(src any, dst []byte) (n int, err error)
 	// ToValue copies bytes from `src` into the given value
 	// The given interface must be a type that can be safely written to.
 	// The number of bytes copied is min(len(src), len(dst)* element size of dst)

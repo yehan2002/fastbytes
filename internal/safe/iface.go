@@ -5,7 +5,7 @@ import (
 )
 
 // FromSlice copy byte from `i` into `dst`
-func (b Bytes) FromSlice(i interface{}, dst []byte, bigEndian bool) (n int, err error) { //nolint: cyclop
+func (b Bytes) FromSlice(i any, dst []byte, bigEndian bool) (n int, err error) { //nolint: cyclop
 	switch src := i.(type) {
 	case []uint8:
 		n = copy(dst[:len(src)], src)
@@ -34,7 +34,7 @@ func (b Bytes) FromSlice(i interface{}, dst []byte, bigEndian bool) (n int, err 
 }
 
 // ToSlice copy byte from `src` into `i`
-func (b Bytes) ToSlice(src []byte, i interface{}, bigEndian bool) (n int, err error) { //nolint: cyclop
+func (b Bytes) ToSlice(src []byte, i any, bigEndian bool) (n int, err error) { //nolint: cyclop
 	switch dst := i.(type) {
 	case []uint8:
 		n = copy(dst, src[:len(dst)])

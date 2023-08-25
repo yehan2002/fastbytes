@@ -115,7 +115,7 @@ func (b *Endianess) ToF64(src []byte, dst []float64) (n int) { return b.p.ToF64(
 // To copies bytes from `s` into the given slice.
 // The given interface must be a type  that can be safely written to.
 // The number of bytes copied is min(len(src), len(dst)* element size of dst)
-func (b *Endianess) To(src []byte, dst interface{}) (int, error) {
+func (b *Endianess) To(src []byte, dst any) (int, error) {
 	return b.p.ToSlice(src, dst, b.rotate)
 }
 
@@ -138,7 +138,7 @@ func (b *Endianess) ToValueOffset(src []byte, dst reflect.Value, start, end int)
 // From copies bytes from the given interface.
 // The provided interface must be a type that can be safely copied.
 // The number of bytes copied is min(len(src)* element size of dst, len(dst))
-func (b *Endianess) From(src interface{}, dst []byte) (int, error) {
+func (b *Endianess) From(src any, dst []byte) (int, error) {
 	return b.p.FromSlice(src, dst, b.rotate)
 }
 

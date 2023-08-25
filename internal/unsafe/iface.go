@@ -13,7 +13,7 @@ import (
 // FromSlice copies bytes from the given interface.
 // The provided interface must be a type that can be safely copied.
 // The given slice must be large enough to fit all the bytes in `s`
-func (Bytes) FromSlice(s interface{}, dst []byte, rotate bool) (n int, err error) {
+func (Bytes) FromSlice(s any, dst []byte, rotate bool) (n int, err error) {
 	var src []byte
 	var size int
 	if src, size, err = ifaceBytes(s, true); err == nil && len(src) != 0 {
@@ -25,7 +25,7 @@ func (Bytes) FromSlice(s interface{}, dst []byte, rotate bool) (n int, err error
 // ToSlice copies bytes from `s` into the given slice.
 // The given interface must be a type  that can be safely written to.
 // `d` must be large enough to fit all the bytes in `s`.
-func (Bytes) ToSlice(src []byte, d interface{}, rotate bool) (n int, err error) {
+func (Bytes) ToSlice(src []byte, d any, rotate bool) (n int, err error) {
 	var dst []byte
 	var size int
 	if dst, size, err = ifaceBytes(d, false); err == nil && len(dst) != 0 {
@@ -35,7 +35,7 @@ func (Bytes) ToSlice(src []byte, d interface{}, rotate bool) (n int, err error) 
 }
 
 // ifaceBytes converts the given interface into a byte slice
-func ifaceBytes(i interface{}, arrayOk bool) (v []byte, size int, err error) {
+func ifaceBytes(i any, arrayOk bool) (v []byte, size int, err error) {
 	typ := reflect.TypeOf(i)
 
 	if i == nil {
@@ -71,7 +71,7 @@ func ifaceBytes(i interface{}, arrayOk bool) (v []byte, size int, err error) {
 // sliceInfo gets the pointer to first element of the slice and the number of bytes till the end of the slice.
 // This function assumes that the given value is not nil and that it is a slice
 // The caller must keep the value reachable.
-func sliceInfo(i interface{}, _ reflect.Type) (data unsafe.Pointer, size int, len int) {
+func sliceInfo(i any, _ reflect.Type) (data unsafe.Pointer, size int, len int) {
 	slice := (*reflect.SliceHeader)(ifaceAddr(i))
 	data = unsafe.Pointer(slice.Data)
 	size = int(reflect.TypeOf(i).Elem().Size())
@@ -82,7 +82,7 @@ func sliceInfo(i interface{}, _ reflect.Type) (data unsafe.Pointer, size int, le
 // arrayInfo gets the pointer to first element of the array and the number of bytes till the end of the array.
 // This function assumes that the given value is not nil and that it is an array.
 // The caller must keep the value reachable.
-func arrayInfo(i interface{}, typ reflect.Type) (data unsafe.Pointer, size int, length int) {
+func arrayInfo(i any, typ reflect.Type) (data unsafe.Pointer, size int, length int) {
 	data = ifaceAddr(i)
 	size = int(typ.Elem().Size())
 	length = typ.Len() * size

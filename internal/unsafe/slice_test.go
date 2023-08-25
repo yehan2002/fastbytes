@@ -8,13 +8,13 @@ import (
 	"testing"
 
 	"github.com/yehan2002/fastbytes/v2/internal"
-	"github.com/yehan2002/fastbytes/v2/internal/testdata"
+	"github.com/yehan2002/fastbytes/v2/internal/testutil"
 	"github.com/yehan2002/is/v2"
 )
 
 var bytes = Bytes{}
 
-func TestSlice(t *testing.T) { testdata.Test(t, bytes, IsLittleEndian) }
+func TestSlice(t *testing.T) { testutil.Test(t, bytes, IsLittleEndian) }
 
 func TestSliceErrors(t *testing.T) {
 	t.Parallel()

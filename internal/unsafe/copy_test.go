@@ -137,7 +137,7 @@ func (c *copyTest) TestCopySliceWithExtra(is is.Is) {
 }
 
 // checkCopy checks if `value` was copied correctly.
-func (c *copyTest) checkCopy(is is.Is, name string, value interface{}, length int, expectedValue interface{}, expectedLength int) {
+func (c *copyTest) checkCopy(is is.Is, name string, value any, length int, expectedValue any, expectedLength int) {
 	is.T().Helper()
 	is(length == expectedLength, "%s copied an incorrect number of bytes", name)
 	is.Equal(value, expectedValue, "%s copied incorrectly", name)

@@ -1,4 +1,4 @@
-package testdata
+package testutil
 
 import (
 	"testing"
@@ -6,18 +6,18 @@ import (
 	"github.com/yehan2002/fastbytes/v2/internal"
 )
 
-//Bench benchmarks the given provider.
+// Bench benchmarks the given provider.
 type Bench struct {
 	provider        internal.Provider
 	rotateBigEndian bool
 }
 
-//Benchmark benchmarks the given provider
+// Benchmark benchmarks the given provider
 func Benchmark(pr internal.Provider, rot bool) *Bench {
 	return &Bench{provider: pr, rotateBigEndian: rot}
 }
 
-//BenchmarkFrom8 benchmarks `From8`
+// BenchmarkFrom8 benchmarks `From8`
 func (r *Bench) BenchmarkFrom8(b *testing.B) {
 	b.Run("FromI8", func(b *testing.B) {
 		var dst [len(bytes)]byte
@@ -30,7 +30,7 @@ func (r *Bench) BenchmarkFrom8(b *testing.B) {
 	})
 }
 
-//BenchmarkFrom16 benchmarks `From16`
+// BenchmarkFrom16 benchmarks `From16`
 func (r *Bench) BenchmarkFrom16(b *testing.B) {
 	b.Run("FromI16BigEndian", func(b *testing.B) {
 		var dst [len(bytes)]byte
@@ -70,7 +70,7 @@ func (r *Bench) BenchmarkFrom16(b *testing.B) {
 	})
 }
 
-//BenchmarkFrom32 benchmarks `From32`
+// BenchmarkFrom32 benchmarks `From32`
 func (r *Bench) BenchmarkFrom32(b *testing.B) {
 	b.Run("FromI32BigEndian", func(b *testing.B) {
 		var dst [len(bytes)]byte
@@ -128,7 +128,7 @@ func (r *Bench) BenchmarkFrom32(b *testing.B) {
 	})
 }
 
-//BenchmarkFrom64 benchmarks `From64`
+// BenchmarkFrom64 benchmarks `From64`
 func (r *Bench) BenchmarkFrom64(b *testing.B) {
 	b.Run("FromI64BigEndian", func(b *testing.B) {
 		var dst [len(bytes)]byte
@@ -186,7 +186,7 @@ func (r *Bench) BenchmarkFrom64(b *testing.B) {
 	})
 }
 
-//BenchmarkTo8 benchmarks `From8`
+// BenchmarkTo8 benchmarks `From8`
 func (r *Bench) BenchmarkTo8(b *testing.B) {
 	b.Run("TestTo8", func(b *testing.B) {
 		var dst [len(bytes)]int8
@@ -199,7 +199,7 @@ func (r *Bench) BenchmarkTo8(b *testing.B) {
 	})
 }
 
-//BenchmarkTo16 benchmarks `From16`
+// BenchmarkTo16 benchmarks `From16`
 func (r *Bench) BenchmarkTo16(b *testing.B) {
 	b.Run("ToI16BigEndian", func(b *testing.B) {
 		var dst [len(Int16BigEndian)]int16
@@ -239,7 +239,7 @@ func (r *Bench) BenchmarkTo16(b *testing.B) {
 	})
 }
 
-//BenchmarkTo32 benchmarks `From32`
+// BenchmarkTo32 benchmarks `From32`
 func (r *Bench) BenchmarkTo32(b *testing.B) {
 	b.Run("ToI32BigEndian", func(b *testing.B) {
 		var dst [len(int32BigEndian)]int32
@@ -297,7 +297,7 @@ func (r *Bench) BenchmarkTo32(b *testing.B) {
 	})
 }
 
-//BenchmarkTo64 benchmarks `From64`
+// BenchmarkTo64 benchmarks `From64`
 func (r *Bench) BenchmarkTo64(b *testing.B) {
 	b.Run("ToI64BigEndian", func(b *testing.B) {
 		var dst [len(int64BigEndian)]int64

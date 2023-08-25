@@ -1,4 +1,4 @@
-package testdata
+package testutil
 
 import (
 	"encoding/binary"
@@ -104,7 +104,7 @@ func init() {
 	appendData(float64LittleEndian, float64BigEndian)
 }
 
-func appendData(little, big interface{}) {
+func appendData(little, big any) {
 	typ := reflect.TypeOf(little)
 	length := typ.Len()
 
@@ -121,11 +121,11 @@ func appendData(little, big interface{}) {
 		name: typ.Elem().Kind().String(),
 		typ:  typ,
 
-		v:          [2]interface{}{little, big},
+		v:          [2]any{little, big},
 		vValue:     [2]reflect.Value{littleV, bigV},
-		vPtr:       [2]interface{}{littleVPtr.Interface(), bigVPtr.Interface()},
+		vPtr:       [2]any{littleVPtr.Interface(), bigVPtr.Interface()},
 		vPtrValue:  [2]reflect.Value{littleVPtr, bigVPtr},
-		slice:      [2]interface{}{littleSliceV.Interface(), bigSliceV.Interface()},
+		slice:      [2]any{littleSliceV.Interface(), bigSliceV.Interface()},
 		sliceValue: [2]reflect.Value{littleSliceV, bigSliceV},
 	}
 

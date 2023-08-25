@@ -1,4 +1,4 @@
-package testdata
+package testutil
 
 import (
 	"errors"
@@ -218,7 +218,7 @@ func (r *testRunner) TestTo64(i is.Is) {
 }
 
 func (r *testRunner) TestFromSlice(i is.Is) {
-	fromSlice := func(name string, src func(bigEndian bool) interface{}) {
+	fromSlice := func(name string, src func(bigEndian bool) any) {
 		i.RunP(name, func(is is.Is) {
 			var dst [len(bytes)]byte
 			n, err := r.provider.FromSlice(src(true), dst[:], r.rotateBigEndian)
@@ -261,7 +261,7 @@ func (r *testRunner) TestFromValue(i is.Is) {
 }
 
 func (r *testRunner) TestToSlice(i is.Is) {
-	toSlice := func(name string, create func() interface{}, expected func(bigEndian bool) interface{}) {
+	toSlice := func(name string, create func() any, expected func(bigEndian bool) any) {
 		i.RunP(name, func(is is.Is) {
 			dst := create()
 			n, err := r.provider.ToSlice(bytes[:], dst, r.rotateBigEndian)
@@ -306,13 +306,13 @@ func (r *testRunner) TestToValue(i is.Is) {
 	}
 }
 
-func (r *testRunner) checkSlice(is is.Is, name string, err error, v interface{}, length int, expectedValue interface{}) {
+func (r *testRunner) checkSlice(is is.Is, name string, err error, v any, length int, expectedValue any) {
 	is.T().Helper()
 	is(err == nil, "%s unexpected error %s %s %s", name, err, v, expectedValue)
 	r.checkCopy(is, name, v, length, expectedValue)
 }
 
-func (r *testRunner) checkCopy(is is.Is, name string, v interface{}, length int, expectedValue interface{}) {
+func (r *testRunner) checkCopy(is is.Is, name string, v any, length int, expectedValue any) {
 	is.T().Helper()
 	is(length == len(bytes), "%s copied an incorrect number of bytes. copied %d expected %d", name, length, len(bytes))
 
@@ -322,7 +322,7 @@ func (r *testRunner) checkCopy(is is.Is, name string, v interface{}, length int,
 	}
 }
 
-func (r *testRunner) checkCopyFrom(is is.Is, name string, v interface{}, length int) {
+func (r *testRunner) checkCopyFrom(is is.Is, name string, v any, length int) {
 	is.T().Helper()
 	r.checkCopy(is, name, v, length, bytes)
 }
