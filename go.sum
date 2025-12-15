@@ -4,5 +4,5 @@ github.com/yehan2002/errors v1.5.4 h1:P6PTSO5sx2TCpLSIeDlsb27NQuIrKeSrWpS0jM7L1f
 github.com/yehan2002/errors v1.5.4/go.mod h1:qYwLUY0Z1evFblp4Z2tS1S0t2jGCvhgK8umXrsn5acQ=
 github.com/yehan2002/is/v2 v2.5.0 h1:9g+DsQ9KkUk3cxgjZaJlg0GY1CHFJPBdGICtpFK2VLk=
 github.com/yehan2002/is/v2 v2.5.0/go.mod h1:/U2ZGGpRXxGu9xuDWv+r1txFZQV/JPRNat5AH8SN1ho=
-golang.org/x/sys v0.37.0 h1:fdNQudmxPjkdUTPnLn5mdQv7Zwvbvpaxqs831goi9kQ=
-golang.org/x/sys v0.37.0/go.mod h1:OgkHotnGiDImocRcuBABYBEXf8A9a87e/uXjp9XT3ks=
+golang.org/x/sys v0.39.0 h1:CvCKL8MeisomCi6qNZ+wbb0DN9E5AATixKsvNtMoMFk=
+golang.org/x/sys v0.39.0/go.mod h1:OgkHotnGiDImocRcuBABYBEXf8A9a87e/uXjp9XT3ks=
